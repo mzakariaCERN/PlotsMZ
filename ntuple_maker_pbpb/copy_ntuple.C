@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
   std::vector<Float_t> *trkEta = new std::vector<Float_t>();   trkEta->clear();
   std::vector<Float_t> *trkPhi = new std::vector<Float_t>();   trkPhi->clear();
   std::vector<Float_t> *trkPt = new std::vector<Float_t>();   trkPt->clear();
-  std::vector<Float_t> *trkAlgo = new std::vector<Float_t>();   trkAlgo->clear();
+  std::vector<Float_t> *trkAlgo = new std::vector<Float_t>();   trkAlgo->clear(); //I think this means number of iteration to make the track
   std::vector<Float_t> *highPurity = new std::vector<Float_t>();   highPurity->clear();
   std::vector<Float_t> *vz = new std::vector<Float_t>();   vz->clear();
   //std::vector<Float_t> *trkweight = new std::vector<Float_t>();   trkweight->clear();
