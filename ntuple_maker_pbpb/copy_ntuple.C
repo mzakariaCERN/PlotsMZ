@@ -12,7 +12,7 @@
 #include "class_def/HiTree.h"
 #include "class_def/Skim.h"
 #include "class_def/GenParticles.h"
-#include "class_def/pfcand.h"
+#include "class_def/pfcand.h"  // needed to access particle flow candidates, make sure the two files are executable and included in the compuling script
 
 #include "TH2F.h"
 #include "TMath.h"
