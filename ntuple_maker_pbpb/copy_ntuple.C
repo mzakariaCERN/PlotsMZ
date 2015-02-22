@@ -12,6 +12,7 @@
 #include "class_def/HiTree.h"
 #include "class_def/Skim.h"
 #include "class_def/GenParticles.h"
+#include "class_def/pfcand.h"  // needed to access particle flow candidates, make sure the two files are executable and included in the compuling script
 
 #include "TH2F.h"
 #include "TMath.h"
@@ -24,6 +25,8 @@
 #include <fstream>
 #include "TMath.h"
 #include "TVector3.h"
+#include <vector>
+
 using namespace std;
 
 
@@ -86,16 +89,18 @@ int main(int argc, char *argv[])
   TTree *inp_tree5;
   TTree *inp_tree6;
   TTree *inp_tree7;
+  TTree *inp_tree2;
 
   //// PYTHIA+HYDJET files:
   ///TFile *my_file = TFile::Open("/mnt/hadoop/cms/store/user/velicanu/HydjetDrum_Pyquen_Dijet120_FOREST_Track8_Jet24_FixedPtHatJES_v0/0.root");
   //TFile *my_file = TFile::Open("/mnt/hadoop/cms/store/user/velicanu/HydjetDrum_Pyquen_Dijet100_FOREST_Track8_Jet24_FixedPtHatJES_v0/0.root");
-//  TFile *my_file = TFile::Open("/mnt/hadoop/cms/store/user/velicanu/HydjetDrum_Pyquen_Dijet80_FOREST_Track8_Jet24_FixedPtHatJES_v0/0.root");
+ // TFile *my_file = TFile::Open("/mnt/hadoop/cms/store/user/velicanu/HydjetDrum_Pyquen_Dijet80_FOREST_Track8_Jet24_FixedPtHatJES_v0/0.root");
 //  TFile *my_file = TFile::Open("/afs/cern.ch/user/m/mozakari/CMSSW_5_3_20/src/FromPelin/ntuple_maker_pbpb/06B1A8BB-EDCA-E311-87A8-00266CF9C018.root");
-         TFile *my_file = TFile::Open("/data/mzakaria/PythiaHydjet_OfficialProduction_20150211/HiForest_PYTHIA_HYDJET_pthat370_Track9_Jet30_matchEqR_merged_forest_0.root");
+//         TFile *my_file = TFile::Open("/data/mzakaria/PythiaHydjet_OfficialProduction_20150211/HiForest_PYTHIA_HYDJET_pthat370_Track9_Jet30_matchEqR_merged_forest_0.root");
 
   // TFile *my_file = TFile::Open("/mnt/hadoop/cms/store/user/velicanu/HydjetDrum_Pyquen_Dijet50_FOREST_Track8_Jet24_FixedPtHatJES_v0/0.root");
   ///TFile *my_file = TFile::Open("/mnt/hadoop/cms/store/user/velicanu/HydjetDrum_Pyquen_Dijet30_FOREST_Track8_Jet24_FixedPtHatJES_v0/0.root");
+  TFile *my_file = TFile::Open("/data/mzakaria/PythiaHydjet_OfficialProduction_20150211/HiForest_PYTHIA_HYDJET_pthat80_Track9_Jet30_matchEqR_merged_forest_0.root");
 
   /// PbPb data:
   //TFile *my_file = TFile::Open("/mnt/hadoop/cms/store/user/dgulhan/PbPbForest_MatchEqR_Calo_HIHighPt_HIRun2011-14Mar2014-v4_merged_nodublicate/PbPbForest_MatchEqR_Calo_HIHighPt_HIRun2011-14Mar2014-v4.root");
@@ -118,6 +123,7 @@ int main(int argc, char *argv[])
   inp_tree5 = (TTree*) my_file->Get("anaTrack/trackTree");
   inp_tree6 = (TTree*) my_file->Get("hltanalysis/HltTree");
   inp_tree7 = (TTree*) my_file->Get("HiGenParticleAna/hi");
+  inp_tree2 = (TTree*) my_file->Get("pfcandAnalyzer/pfTree");
 
   JetAna *my_ct = new JetAna(inp_tree);
   HiTree *my_ct3 = new HiTree(inp_tree3);
@@ -125,7 +131,7 @@ int main(int argc, char *argv[])
   Tracks *my_ct5 = new Tracks(inp_tree5);
   HLT *my_ct6 = new HLT(inp_tree6);
   GenParticles *my_ct7 = new GenParticles(inp_tree7);
-
+  pfcand *my_ct2 = new pfcand(inp_tree2);
 
 
   std::cout << "Got CT" << std::endl;
@@ -149,6 +155,7 @@ int main(int argc, char *argv[])
   Int_t mult = -999;
   Int_t nTrk = -999;
   Int_t nParticle = -999;
+  Int_t nPFpart = -999;  // this variable used to loop over PF candidates
 
   std::vector<Int_t> *sube= new std::vector<Int_t>();  sube->clear();
   std::vector<Float_t> *pt = new std::vector<Float_t>();  pt->clear();
@@ -172,6 +179,7 @@ int main(int argc, char *argv[])
   std::vector<Float_t> *jteta = new std::vector<Float_t>();   jteta->clear();
   std::vector<Float_t> *jtphi = new std::vector<Float_t>();   jtphi->clear();
   std::vector<Float_t> *jtpt = new std::vector<Float_t>();   jtpt->clear();
+  std::vector<Float_t> *rawpt = new std::vector<Float_t>();   rawpt->clear(); //From HT, rawpt is jtpt with jff-dep corrections
   std::vector<Float_t> *refeta = new std::vector<Float_t>();  refeta->clear();
   std::vector<Float_t> *refphi = new std::vector<Float_t>();  refphi->clear();
   std::vector<Float_t> *refpt = new std::vector<Float_t>();   refpt->clear();
@@ -188,6 +196,7 @@ int main(int argc, char *argv[])
   std::vector<Float_t> *trkDz1 = new std::vector<Float_t>();   trkDz1->clear();
   std::vector<Float_t> *trkDzError1 = new std::vector<Float_t>();   trkDzError1->clear();
   std::vector<Float_t> *trkPtError = new std::vector<Float_t>();   trkPtError->clear();
+ 
   std::vector<Float_t> *eff = new std::vector<Float_t>();   eff->clear();
   std::vector<Float_t> *fake = new std::vector<Float_t>();   fake->clear();
   std::vector<Float_t> *trkfake = new std::vector<Float_t>();   trkfake->clear();
@@ -204,6 +213,12 @@ int main(int argc, char *argv[])
   std::vector<Float_t> *genphi = new std::vector<Float_t>();  genphi->clear();
   std::vector<Float_t> *genpt = new std::vector<Float_t>();   genpt->clear();
 
+  std::vector<Int_t> *pfId = new std::vector<Int_t>(); pfId->clear();
+  std::vector<Float_t> *pfPt = new std::vector<Float_t>(); pfPt->clear();
+  std::vector<Float_t> *pfVsPt = new std::vector<Float_t>(); pfVsPt->clear();
+  std::vector<Float_t> *pfEta = new std::vector<Float_t>(); pfEta->clear();
+  std::vector<Float_t> *pfPhi = new std::vector<Float_t>(); pfPhi->clear();
+  std::vector<Float_t> *sumpt = new std::vector<Float_t>(); sumpt->clear();
 
   Int_t pHBHENoiseFilter = -999;
   Int_t pcollisionEventSelection = -999;
@@ -245,6 +260,8 @@ int main(int argc, char *argv[])
   mixing_tree->Branch("jteta", "vector<Float_t>", &jteta);
   mixing_tree->Branch("jtphi", "vector<Float_t>", &jtphi);
   mixing_tree->Branch("jtpt", "vector<Float_t>", &jtpt);
+  mixing_tree->Branch("rawpt", "vector<Float_t>", &rawpt);
+
   mixing_tree->Branch("pthat", &pthat, "pthat/F");
   mixing_tree->Branch("refeta", "vector<Float_t>", &refeta);
   mixing_tree->Branch("refphi", "vector<Float_t>", &refphi);
@@ -270,6 +287,15 @@ int main(int argc, char *argv[])
   mixing_tree->Branch("geneta", "vector<Float_t>", &geneta);
   mixing_tree->Branch("genphi", "vector<Float_t>", &genphi);
   mixing_tree->Branch("genpt", "vector<Float_t>", &genpt);
+
+  mixing_tree->Branch("nPFpart", &nPFpart, "nPFpart/I");
+  mixing_tree->Branch("pfId", "vector<Int_t>", &pfId);
+  mixing_tree->Branch("pfPt", "vector<Float_t>", &pfPt);
+  mixing_tree->Branch("pfVsPt", "vector<Float_t>", &pfVsPt);
+  mixing_tree->Branch("pfEta", "vector<Float_t>", &pfEta);
+  mixing_tree->Branch("pfPhi", "vector<Float_t>", &pfPhi);
+  mixing_tree->Branch("sumpt", "vector<Float_t>", &sumpt);
+  
 
 
   int npt=29;
@@ -313,8 +339,8 @@ int main(int argc, char *argv[])
 
   output_file->cd();
 
-  int ev_min = output_file_num*70000;
-  int ev_max = ev_min + 69999;
+  int ev_min = output_file_num*10000;
+  int ev_max = ev_min + 9999;
 
   cout << "ev_min: " << ev_min << ", Entries: " << n_evt << std::endl;
 
@@ -329,7 +355,7 @@ int main(int argc, char *argv[])
 
     my_ct->fChain->GetEntry(evi);
 
-    //  my_ct2->fChain->GetEntry(evi);
+    my_ct2->fChain->GetEntry(evi);  //used to include PF
     my_ct3->fChain->GetEntry(evi);
     my_ct4->fChain->GetEntry(evi);
     my_ct5->fChain->GetEntry(evi);
@@ -340,6 +366,7 @@ int main(int argc, char *argv[])
     nTrk = my_ct5->nTrk;
     mult = my_ct7->mult;
     nParticle = my_ct5->nParticle; 
+    nPFpart = my_ct2->nPFpart;
 
 
     if( evi % 1000 == 0 ) std::cout << "Filled successfully" << std::endl;
@@ -369,6 +396,18 @@ int main(int argc, char *argv[])
     }   
 
 
+    for(int pfi = 0; pfi< my_ct2->nPFpart ; pfi++) {
+
+
+      pfId->push_back(my_ct2->pfId[pfi]);
+      pfPt->push_back(my_ct2->pfPt[pfi]);
+      pfVsPt->push_back(my_ct2->pfVsPt[pfi]);
+      pfEta->push_back(my_ct2->pfEta[pfi]);
+      pfPhi->push_back(my_ct2->pfPhi[pfi]);
+      sumpt->push_back(my_ct2->sumpt[pfi]);
+
+    } /// particle flow candidate loop
+
 
     for(int j4i = 0; j4i < my_ct->nref ; j4i++) {
       refeta->push_back(my_ct->refeta[j4i]);
@@ -387,6 +426,8 @@ int main(int argc, char *argv[])
       jteta->push_back(my_ct->jteta[j4i]);
       jtphi->push_back(my_ct->jtphi[j4i]);
       jtpt->push_back(my_ct->jtpt[j4i]);
+      rawpt->push_back(my_ct->jtpt[j4i]);
+
       trackMax->push_back(my_ct->trackMax[j4i]);
 
     } /// jet loop
@@ -496,6 +537,8 @@ int main(int argc, char *argv[])
       trkDz1 -> push_back(my_ct5->trkDz1[itrk]);
       trkDzError1 -> push_back(my_ct5->trkDzError1[itrk]);
       trkPtError -> push_back(my_ct5->trkPtError[itrk]);
+
+
       eff->push_back(temp_eff);
       fake->push_back(temp_fake);
       trkfake -> push_back(my_ct5->trkFake[itrk]);
@@ -547,6 +590,8 @@ int main(int argc, char *argv[])
       jteta->clear();
       jtphi->clear();
       jtpt->clear();
+      rawpt->clear();
+
       refeta->clear();
       refphi->clear();
       refpt->clear();
@@ -571,6 +616,15 @@ int main(int argc, char *argv[])
       geneta->clear();
       genphi->clear();
       genpt->clear();
+
+	
+ 	pfId->clear();
+    pfPt->clear();
+    pfVsPt->clear();
+    pfEta->clear();
+    pfPhi->clear();
+    sumpt->clear();
+
 
     }  ///event loop
 
