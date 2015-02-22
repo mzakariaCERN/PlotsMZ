@@ -3202,7 +3202,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
 
       
       int min_ev_num = 0.;      int max_ev_num = 0;
-      min_ev_num = npart*10000;
+      min_ev_num = npart*10000;  //MZ the code uns over 10000 events only, and it takes some long time!
       max_ev_num = (npart+1)*10000;
       
       if( npart == e_AllParts ) {
