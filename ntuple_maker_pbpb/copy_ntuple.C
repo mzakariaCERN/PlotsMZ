@@ -426,7 +426,7 @@ int main(int argc, char *argv[])
       jteta->push_back(my_ct->jteta[j4i]);
       jtphi->push_back(my_ct->jtphi[j4i]);
       jtpt->push_back(my_ct->jtpt[j4i]);
-      rawpt->push_back(my_ct->jtpt[j4i]);
+      rawpt->push_back(my_ct->rawpt[j4i]);
 
       trackMax->push_back(my_ct->trackMax[j4i]);
 
