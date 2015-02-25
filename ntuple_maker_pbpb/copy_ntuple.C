@@ -390,7 +390,9 @@ int main(int argc, char *argv[])
 
 
     for(int j4i = 0; j4i < my_ct->ngen ; j4i++) {
-      geneta->push_back(my_ct->geneta[j4i]);
+      if (my_ct->genpt[j4i] < 30.0 )
+		continue;
+	geneta->push_back(my_ct->geneta[j4i]);
       genphi->push_back(my_ct->genphi[j4i]); 
       genpt->push_back(my_ct->genpt[j4i]);
     }   
@@ -410,7 +412,14 @@ int main(int argc, char *argv[])
 
 
     for(int j4i = 0; j4i < my_ct->nref ; j4i++) {
-      refeta->push_back(my_ct->refeta[j4i]);
+      if (fabs(my_ct->refeta[j4i]) > 2.4)
+		continue;
+	if (fabs(my_ct->refphi[j4i]) > 3.14159)
+		continue;
+	if (my_ct->refpt[j4i] < 50.0)
+		continue;
+
+	refeta->push_back(my_ct->refeta[j4i]);
       refphi->push_back(my_ct->refphi[j4i]);
       refpt->push_back(my_ct->refpt[j4i]);
 
@@ -422,6 +431,10 @@ int main(int argc, char *argv[])
 
 
     for(int j4i = 0; j4i < my_ct->nref ; j4i++) {
+	if (my_ct->jtpt[j4i] < 50.0)
+		 continue;
+	if (fabs(my_ct->jteta[j4i]) > 2) 
+		continue;
 
       jteta->push_back(my_ct->jteta[j4i]);
       jtphi->push_back(my_ct->jtphi[j4i]);
