@@ -1,0 +1,23 @@
+export wdir=/home/htrauger/HIN14016/HT_Analyzer5
+
+cd $wdir
+source ./clustercompile.sh && echo "Compiled."
+
+rm *tmp*
+
+
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 0" | qsub -o $wdir/tmp0.log -e $wdir/tmp0.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 1" | qsub -o $wdir/tmp1.log -e $wdir/tmp1.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 2" | qsub -o $wdir/tmp2.log -e $wdir/tmp2.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 3" | qsub -o $wdir/tmp3.log -e $wdir/tmp3.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 4" | qsub -o $wdir/tmp4.log -e $wdir/tmp4.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 5" | qsub -o $wdir/tmp5.log -e $wdir/tmp5.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 6" | qsub -o $wdir/tmp6.log -e $wdir/tmp6.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 7" | qsub -o $wdir/tmp7.log -e $wdir/tmp7.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 8" | qsub -o $wdir/tmp8.log -e $wdir/tmp8.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 9" | qsub -o $wdir/tmp9.log -e $wdir/tmp9.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 10" | qsub -o $wdir/tmp10.log -e $wdir/tmp10.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 11" | qsub -o $wdir/tmp11.log -e $wdir/tmp11.err
+echo "cd $wdir; ./HT_Analyzer5.out 0 1 12" | qsub -o $wdir/tmp12.log -e $wdir/tmp12.err
+
+
