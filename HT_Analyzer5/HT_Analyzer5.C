@@ -110,7 +110,7 @@ int main(int argc, char *argv[]){
   assert(argc == 4);
   dataset_type_code = atoi(argv[1]);    //// pick datasets you want to run over
   
-  trkPtCut = atof(argv[2]);
+  trkPtCut = atof(argv[2]);   // MZ defined in mixing.h
   parti = atoi(argv[3]);
   assert(trkPtCut > 0. && trkPtCut < 5.);
   
@@ -123,7 +123,7 @@ int main(int argc, char *argv[]){
   else if( dataset_type_code == e_HydJet30 || dataset_type_code == e_HydJet50 || dataset_type_code == e_HydJet80|| dataset_type_code == e_HydJet100|| dataset_type_code == e_HydJet120|| dataset_type_code == e_HydJet170|| dataset_type_code == e_HydJet200 || dataset_type_code == e_HydJet250 || dataset_type_code == e_HydJet300) is_data =false;
   else assert(0);
 
-  assert(is_data);
+  assert(is_data);   // MZ making sure we are running on data
   
   std::vector<TString> files_of_file_names;   files_of_file_names.clear();
   std::vector<float> Xsections;   Xsections.clear();
