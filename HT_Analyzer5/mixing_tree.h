@@ -44,7 +44,7 @@ public :
    vector<int>     *mtrkQual;
    vector<float>   *trkEta;
    vector<float>   *trkPhi;
-   vector<float>   *trkPt;
+   vector<float>   *trkPt;  //MZ the RECO track Pt
    vector<float>   *trkAlgo;
    vector<float>   *highPurity;
    vector<float>   *vz;
