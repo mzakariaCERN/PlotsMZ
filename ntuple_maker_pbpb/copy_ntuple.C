@@ -376,7 +376,8 @@ int main(int argc, char *argv[])
     //// genparticles
     for(int part = 0; part < my_ct7->mult; part++) {
       if( fabs(my_ct7->eta[part])>2.4) continue;
-      if( my_ct7->pt[part] < 1. ) continue;
+//      if( my_ct7->pt[part] < 1. ) continue;  /// MZ, We are changing this to Olga's request
+      if( my_ct7->pt[part] < 0.5 ) continue;  /// MZ, We are changing this to Olga's request
       int charge = my_ct7->chg[part];
       if(charge==0) continue ;
 
@@ -456,8 +457,8 @@ int main(int argc, char *argv[])
       if(fabs(eta)>2.4) continue; //acceptance of the tracker   
 
       float pt=my_ct5->pPt[itrk];
-      //if(pt<0.5) continue; //acceptance of the tracker
-      if(pt<1.0) continue; //acceptance of the tracker
+      if(pt<0.5) continue; //acceptance of the tracker  // MZ changed due to Olga's request 20150228
+//      if(pt<1.0) continue; //acceptance of the tracker
 
 
       pPt->push_back(my_ct5->pPt[itrk]);
@@ -486,8 +487,8 @@ int main(int argc, char *argv[])
       if(fabs(eta)>2.4) continue; //acceptance of the tracker   
 
       float pt=my_ct5->trkPt[itrk];
-      //if(pt<0.5) continue; //acceptance of the tracker
-      if(pt<1.0) continue; //acceptance of the tracker
+      if(pt<0.5) continue; //acceptance of the tracker
+      //MZ//  if(pt<1.0) continue; //acceptance of the tracker changed per olga's request 20150228
 
       //acceptance of the tracker
       float phi=my_ct5->trkPhi[itrk];
