@@ -27,7 +27,7 @@
 
 using namespace std;
 
-
+//MZ// define is another way to set a constant. 
 #define nCBins 4
 //#define nCBins 2
 #define nPtBins_sub 10
@@ -99,7 +99,7 @@ int npart = -999;
 
 
 
-float CBins[nCBins+1] = {0, 20, 60, 100, 200};
+float CBins[nCBins+1] = {0, 20, 60, 100, 200}; //MZ silly naming convention
 TString CBin_strs[nCBins+1] = {"Cent0", "Cent10", "Cent30", "Cent50", "Cent100"};
 
 float CentralityBins[nCentralityBins+1] = {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200};
@@ -601,17 +601,16 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
   track_vz_weighted = new TH1F((TString) (desc + "_track_vz_weighted"), "", 80, -20., 20.);
 
 
-  for (int ibin2=0;ibin2<nPtBins;ibin2++){
+  for (int ibin2=0;ibin2<nPtBins;ibin2++)
+  {
     fullrecjet_aftercuts[ibin2] = new TH1F((TString) (desc + "_fullrecjet_aftercuts" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 10, x_Bins_mc);    fullrecjet_aftercuts[ibin2]->Sumw2();
-
     fullrefjet_aftercuts[ibin2] = new TH1F((TString) (desc + "_fullrefjet_aftercuts" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 10, x_Bins_mc);    fullrefjet_aftercuts[ibin2]->Sumw2();
-
-
 
   }
 
 
-  for (int ibin=0;ibin<nCBins;ibin++){
+  for (int ibin=0;ibin<nCBins;ibin++)
+  {
 
 
     jet_pT_hist[ibin] = new TH1F((TString) (desc + "_jet_pT_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 25, 0., 500.); jet_pT_hist[ibin]->Sumw2();
@@ -625,33 +624,20 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
     SubJetPt_hist[ibin] = new TH1F((TString) (desc + "_SubJetPt_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 25, 0., 500.);     SubJetPt_hist[ibin]->Sumw2();
     SubJetPhi_hist[ibin] = new TH1F((TString) (desc + "_SubJetPhi_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 72, -TMath::Pi(),TMath::Pi());     SubJetPhi_hist[ibin]->Sumw2();
     SubJetEta_hist[ibin] = new TH1F((TString) (desc + "_SubJetEta_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 50, -5., 5.);     SubJetEta_hist[ibin]->Sumw2();
-
     dPhi_leadingjet_hist[ibin] = new TH1F((TString) (desc + "_dPhi_leadingjet_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 30,0,3.14159);     dPhi_leadingjet_hist[ibin]->Sumw2();
     dPhi_subleadingjet_hist[ibin] = new TH1F((TString) (desc + "_dPhi_subleadingjet_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 30,0,3.14159);     dPhi_subleadingjet_hist[ibin]->Sumw2();
-
-
     JetShapeDiffParticles_bkg_1D_total[ibin] = new TH1F((TString) (desc + "_JetShapeDiffParticles_bkg_1D_total"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 6,0.0,0.3);     JetShapeDiffParticles_bkg_1D_total[ibin]->Sumw2();     
-
-
     JetShapeIntegratedParticles_bkg_1D_total[ibin] = new TH1F((TString) (desc + "_JetShapeIntegratedParticles_bkg_1D_total"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 6,0.05,0.35);     JetShapeIntegratedParticles_bkg_1D_total[ibin]->Sumw2();
-
-
     JetEnergy_gen_vs_rec[ibin] = new TH2F((TString) (desc + "_JetEnergy_gen_vs_rec"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 500, 0, 1000, 500, 0, 1000);     JetEnergy_gen_vs_rec[ibin]->Sumw2();
-
-      dPhi_hist[ibin] = new TH1F((TString) (desc + "_dPhi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 30, 0.,TMath::Pi());     dPhi_hist[ibin]->Sumw2();
-      dPhi_after_hist[ibin] = new TH1F((TString) (desc + "_dPhi_after_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 30,0,3.14159);     dPhi_after_hist[ibin]->Sumw2();
-
-      dPhi_vector[ibin] = new TH1D((TString) (desc + "_dPhi_vector"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 60,-2*TMath::Pi(),2*TMath::Pi());     dPhi_vector[ibin]->Sumw2();
-
-    for (int ibin3=0;ibin3<nTrkPtBins;ibin3++){
-
-      rr_gen_leadingjet[ibin][ibin3] = new TH1F((TString) (desc + "_rr_gen_leadingjet"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]), "", 50, 0., 5.);    rr_gen_leadingjet[ibin][ibin3]->Sumw2();
-
-
-      rr_reco_leadingjet[ibin][ibin3] = new TH1F((TString) (desc + "_rr_reco_leadingjet"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]), "", 50, 0., 5.);    rr_reco_leadingjet[ibin][ibin3]->Sumw2();
-
-
-      rr_reco_leadingjet_weighted[ibin][ibin3] = new TH1F((TString) (desc + "_rr_reco_leadingjet_weighted"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]), "", 50, 0., 5.);    rr_reco_leadingjet_weighted[ibin][ibin3]->Sumw2();
+    dPhi_hist[ibin] = new TH1F((TString) (desc + "_dPhi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 30, 0.,TMath::Pi());     dPhi_hist[ibin]->Sumw2();
+    dPhi_after_hist[ibin] = new TH1F((TString) (desc + "_dPhi_after_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 30,0,3.14159);     dPhi_after_hist[ibin]->Sumw2();
+    dPhi_vector[ibin] = new TH1D((TString) (desc + "_dPhi_vector"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 60,-2*TMath::Pi(),2*TMath::Pi());     dPhi_vector[ibin]->Sumw2();
+    
+    for (int ibin3=0;ibin3<nTrkPtBins;ibin3++)
+    {
+  	rr_gen_leadingjet[ibin][ibin3] = new TH1F((TString) (desc + "_rr_gen_leadingjet"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]), "", 50, 0., 5.);    rr_gen_leadingjet[ibin][ibin3]->Sumw2();
+      	rr_reco_leadingjet[ibin][ibin3] = new TH1F((TString) (desc + "_rr_reco_leadingjet"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]), "", 50, 0., 5.);    rr_reco_leadingjet[ibin][ibin3]->Sumw2();
+      	rr_reco_leadingjet_weighted[ibin][ibin3] = new TH1F((TString) (desc + "_rr_reco_leadingjet_weighted"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]), "", 50, 0., 5.);    rr_reco_leadingjet_weighted[ibin][ibin3]->Sumw2();
 
 
    }
@@ -666,34 +652,16 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
       ThirdJetPhi_hist[ibin][ibin2] = new TH1F((TString) (desc + "_ThirdJetPhi_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 36, 0.,TMath::Pi());     ThirdJetPhi_hist[ibin][ibin2]->Sumw2();
       ThirdJetEta_hist[ibin][ibin2] = new TH1F((TString) (desc + "_ThirdJetEta_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, -5., 5.);     ThirdJetEta_hist[ibin][ibin2]->Sumw2();
 
-
       //dPhi_hist[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 30, 0.,TMath::Pi());     dPhi_hist[ibin][ibin2]->Sumw2();
-
-
       dEta_hist[ibin][ibin2] = new TH1F((TString) (desc + "_dEta_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100,-5,5);     dEta_hist[ibin][ibin2]->Sumw2();
-
-
      /// dPhi_after_hist[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_after_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 30,0,3.14159);     dPhi_after_hist[ibin][ibin2]->Sumw2();
-
       dPhi_jet_track[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_jet_track"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 30,0,3.14159);     dPhi_jet_track[ibin][ibin2]->Sumw2();
-
-
       dPhi_jet_track_ptweight[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_jet_track_ptweight"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 30,0,3.14159);     dPhi_jet_track_ptweight[ibin][ibin2]->Sumw2();
-
-
-
-
-
       // dPhi_hist[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 6);     // dPhi_hist[ibin][ibin2]->Sumw2();
       //dPhi_after_hist[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_after_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 6);     //dPhi_after_hist[ibin][ibin2]->Sumw2();
-
-
       all_jets_corrpT[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_corrpT"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, 0., 500.);     all_jets_corrpT[ibin][ibin2]->Sumw2();
       all_jets_phi[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_phi"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 72, -TMath::Pi(), TMath::Pi());     all_jets_phi[ibin][ibin2]->Sumw2();
-
-
       all_jets_eta[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_eta"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, -5., 5.);     all_jets_eta[ibin][ibin2]->Sumw2();
-
       //// leading jet histograms
       only_leadingjets_corrpT[ibin][ibin2] = new TH1F((TString) (desc + "_only_leadingjets_corrpT"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 500.);     only_leadingjets_corrpT[ibin][ibin2]->Sumw2();
       only_leadingjets_phi[ibin][ibin2] = new TH1F((TString) (desc + "_only_leadingjets_phi"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 36, 0.,TMath::Pi());     only_leadingjets_phi[ibin][ibin2]->Sumw2();
@@ -701,7 +669,6 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
       all_cand_pT_hist[ibin][ibin2] = new TH1F((TString) (desc + "_all_cand_pT_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 500.);     all_cand_pT_hist[ibin][ibin2]->Sumw2();
       all_cand_phi_hist[ibin][ibin2] = new TH1F((TString) (desc + "_all_cand_phi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 36, 0.,TMath::Pi());     all_cand_phi_hist[ibin][ibin2]->Sumw2();
       all_cand_eta_hist[ibin][ibin2] = new TH1F((TString) (desc + "_all_cand_eta_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, -5., 5.);     all_cand_eta_hist[ibin][ibin2]->Sumw2();
-
       track_cand_pT_hist[ibin][ibin2] = new TH1D((TString) (desc + "_track_cand_pT_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", nPtBintrk,ptBintrk);     track_cand_pT_hist[ibin][ibin2]->Sumw2();
       track_cand_phi_hist[ibin][ibin2] = new TH1D((TString) (desc + "_track_cand_phi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 72, -TMath::Pi(),TMath::Pi());     track_cand_phi_hist[ibin][ibin2]->Sumw2();
       track_cand_eta_hist[ibin][ibin2] = new TH1D((TString) (desc + "_track_cand_eta_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 12, -2.4, 2.4);     track_cand_eta_hist[ibin][ibin2]->Sumw2();
@@ -717,11 +684,6 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
       NumElectrons[ibin][ibin2] = new TH1F((TString) (desc + "_NumElectrons"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumElectrons[ibin][ibin2]->Sumw2();
       NumMuons[ibin][ibin2] = new TH1F((TString) (desc + "_NumMuons"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumMuons[ibin][ibin2]->Sumw2();
 
-
-
-
-
-
       NumNeutral_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumNeutral_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumNeutral_bkg[ibin][ibin2]->Sumw2();
       NumPhotons_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumPhotons_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumPhotons_bkg[ibin][ibin2]->Sumw2();
       NumAll_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumAll_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumAll_bkg[ibin][ibin2]->Sumw2();
@@ -729,17 +691,10 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
       NumChargedParticles_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumChargedParticles_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumChargedParticles_bkg[ibin][ibin2]->Sumw2();
       NumElectrons_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumElectrons_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumElectrons_bkg[ibin][ibin2]->Sumw2();
       NumMuons_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumMuons_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumMuons_bkg[ibin][ibin2]->Sumw2();
-
-
-
       NumNeutral_subleadingjet_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumNeutral_subleadingjet_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumNeutral_subleadingjet_bkg[ibin][ibin2]->Sumw2();
       NumPhotons_subleadingjet_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumPhotons_subleadingjet_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumPhotons_subleadingjet_bkg[ibin][ibin2]->Sumw2();
       NumAll_subleadingjet_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumAll_subleadingjet_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumAll_subleadingjet_bkg[ibin][ibin2]->Sumw2();
       NumChargedHadrons_subleadingjet_bkg[ibin][ibin2] = new TH1F((TString) (desc + "_NumChargedHadrons_subleadingjet_bkg"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 100.);     NumChargedHadrons_subleadingjet_bkg[ibin][ibin2]->Sumw2();
-
-
-
-
 
       ///===================////////======================//////////////===================//////////=================//////==========
 
@@ -848,7 +803,7 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
        */
 
       JetShapeDiffParticles_bkg_1D[ibin][ibin2] = new TH1F((TString) (desc + "_JetShapeDiffParticles_bkg_1D"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 6,0.0,0.3);     JetShapeDiffParticles_bkg_1D[ibin][ibin2]->Sumw2();     
-      JetShapeDiffParticles_1D[ibin][ibin2] = new TH1F((TString) (desc + "_JetShapeDiffParticles_1D"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 6,0.0,0.3);     JetShapeDiffParticles_1D[ibin][ibin2]->Sumw2();
+      JetShapeDiffParticles_1D[ibin][ibin2] =     new TH1F((TString) (desc + "_JetShapeDiffParticles_1D"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 6,0.0,0.3);     JetShapeDiffParticles_1D[ibin][ibin2]->Sumw2();
 
 
       JetShapeIntegratedParticles_bkg_1D[ibin][ibin2] = new TH1F((TString) (desc + "_JetShapeIntegratedParticles_bkg_1D"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 6,0.05,0.35);     JetShapeIntegratedParticles_bkg_1D[ibin][ibin2]->Sumw2();
@@ -1275,15 +1230,18 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
 
 
   std::cout << "AddHists" << std::endl;
-  for(int centi = 0; centi < nCBins; centi++) {
-    for(int pti = 0; pti < nPtBins; pti++) {
+  for(int centi = 0; centi < nCBins; centi++) 
+  {
+    for(int pti = 0; pti < nPtBins; pti++) 
+    {
       std::cout << "centi: " << centi << ", ptio : " << pti << ", wt: " << wt << ", add signal: " << more_hists->sig_count[centi][pti] << ", bkg: " << more_hists->bkg_count[centi][pti] << ", result signal: " << sig_count[centi][pti] << ", result_bkg: " << bkg_count[centi][pti] << "\n";
       sig_count[centi][pti] += more_hists->sig_count[centi][pti]*wt;
       bkg_count[centi][pti] += more_hists->bkg_count[centi][pti]*wt;
 
     }
 
-    for(int pti_sub = 0; pti_sub < nPtBins_sub; pti_sub++) {
+    for(int pti_sub = 0; pti_sub < nPtBins_sub; pti_sub++) 
+    {
       std::cout << "centi: " << centi << ", ptio_sub : " << pti_sub << ", wt: " << wt << ", add signal: " << more_hists->sig_count_sub[centi][pti_sub] << ", bkg: " << more_hists->bkg_count_sub[centi][pti_sub] << ", result signal: " << sig_count_sub[centi][pti_sub] << ", result_bkg: " << bkg_count[centi][pti_sub] << "\n";
 
       sig_count_sub[centi][pti_sub] += more_hists->sig_count_sub[centi][pti_sub]*wt;
@@ -1370,7 +1328,8 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
   track_vz_weighted->Sumw2();   more_hists->track_vz_weighted->Sumw2();
   track_vz_weighted->Add(more_hists->track_vz_weighted, wt);
 
-  for (int ibin2=0;ibin2<nPtBins;ibin2++){
+  for (int ibin2=0;ibin2<nPtBins;ibin2++)
+  {
     fullrecjet_aftercuts[ibin2]->Sumw2();   more_hists->fullrecjet_aftercuts[ibin2]->Sumw2();
     fullrecjet_aftercuts[ibin2]->Add(more_hists->fullrecjet_aftercuts[ibin2], wt);
 
@@ -1448,7 +1407,8 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
 
 
 
-    for (int ibin2=0;ibin2<nPtBins;ibin2++){ 
+    for (int ibin2=0;ibin2<nPtBins;ibin2++)
+    { 
       
       
       ThirdJetPt_hist[ibin][ibin2]->Sumw2();   more_hists->ThirdJetPt_hist[ibin][ibin2]->Sumw2();
@@ -2022,7 +1982,8 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
       emixed_jetphi[ibin][ibin2]->Add(more_hists->emixed_jetphi[ibin][ibin2], wt);
 
 
-      for (int ibin3=0;ibin3<nTrkPtBins;ibin3++){
+      for (int ibin3=0;ibin3<nTrkPtBins;ibin3++)
+      {
 
 	hJetTrackSignalBackground[ibin][ibin2][ibin3]->Sumw2();   more_hists->hJetTrackSignalBackground[ibin][ibin2][ibin3]->Sumw2();
 	hJetTrackSignalBackground[ibin][ibin2][ibin3]->Add(more_hists->hJetTrackSignalBackground[ibin][ibin2][ibin3], wt);
@@ -2030,16 +1991,14 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
 	hJetTrackBackground[ibin][ibin2][ibin3]->Sumw2();   more_hists->hJetTrackBackground[ibin][ibin2][ibin3]->Sumw2();
 	hJetTrackBackground[ibin][ibin2][ibin3]->Add(more_hists->hJetTrackBackground[ibin][ibin2][ibin3], wt);
 
-  Ngen[ibin][ibin2][ibin3]->Sumw2();   more_hists->Ngen[ibin][ibin2][ibin3]->Sumw2();
-  Ngen[ibin][ibin2][ibin3]->Add(more_hists->Ngen[ibin][ibin2][ibin3], wt);
+  	Ngen[ibin][ibin2][ibin3]->Sumw2();   more_hists->Ngen[ibin][ibin2][ibin3]->Sumw2();
+  	Ngen[ibin][ibin2][ibin3]->Add(more_hists->Ngen[ibin][ibin2][ibin3], wt);
 
-  Ntracks[ibin][ibin2][ibin3]->Sumw2();   more_hists->Ntracks[ibin][ibin2][ibin3]->Sumw2();
-  Ntracks[ibin][ibin2][ibin3]->Add(more_hists->Ntracks[ibin][ibin2][ibin3], wt);
+  	Ntracks[ibin][ibin2][ibin3]->Sumw2();   more_hists->Ntracks[ibin][ibin2][ibin3]->Sumw2();
+  	Ntracks[ibin][ibin2][ibin3]->Add(more_hists->Ntracks[ibin][ibin2][ibin3], wt);
 
-  Ntracks_awayside[ibin][ibin2][ibin3]->Sumw2();   more_hists->Ntracks_awayside[ibin][ibin2][ibin3]->Sumw2();
-  Ntracks_awayside[ibin][ibin2][ibin3]->Add(more_hists->Ntracks_awayside[ibin][ibin2][ibin3], wt);
-
-
+  	Ntracks_awayside[ibin][ibin2][ibin3]->Sumw2();   more_hists->Ntracks_awayside[ibin][ibin2][ibin3]->Sumw2();
+  	Ntracks_awayside[ibin][ibin2][ibin3]->Add(more_hists->Ntracks_awayside[ibin][ibin2][ibin3], wt);
 
 	TrkPt[ibin][ibin2][ibin3]->Sumw2();   more_hists->TrkPt[ibin][ibin2][ibin3]->Sumw2();
 	TrkPt[ibin][ibin2][ibin3]->Add(more_hists->TrkPt[ibin][ibin2][ibin3], wt);
@@ -2051,14 +2010,14 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
 	TrkPhi[ibin][ibin2][ibin3]->Add(more_hists->TrkPhi[ibin][ibin2][ibin3], wt);
 
 
-  TrkPt_weighted[ibin][ibin2][ibin3]->Sumw2();   more_hists->TrkPt_weighted[ibin][ibin2][ibin3]->Sumw2();
-  TrkPt_weighted[ibin][ibin2][ibin3]->Add(more_hists->TrkPt_weighted[ibin][ibin2][ibin3], wt);
+	  TrkPt_weighted[ibin][ibin2][ibin3]->Sumw2();   more_hists->TrkPt_weighted[ibin][ibin2][ibin3]->Sumw2();
+ 	 TrkPt_weighted[ibin][ibin2][ibin3]->Add(more_hists->TrkPt_weighted[ibin][ibin2][ibin3], wt);
 
-  TrkEta_weighted[ibin][ibin2][ibin3]->Sumw2();   more_hists->TrkEta_weighted[ibin][ibin2][ibin3]->Sumw2();
-  TrkEta_weighted[ibin][ibin2][ibin3]->Add(more_hists->TrkEta_weighted[ibin][ibin2][ibin3], wt);
+	  TrkEta_weighted[ibin][ibin2][ibin3]->Sumw2();   more_hists->TrkEta_weighted[ibin][ibin2][ibin3]->Sumw2();
+  	TrkEta_weighted[ibin][ibin2][ibin3]->Add(more_hists->TrkEta_weighted[ibin][ibin2][ibin3], wt);
 
-  TrkPhi_weighted[ibin][ibin2][ibin3]->Sumw2();   more_hists->TrkPhi_weighted[ibin][ibin2][ibin3]->Sumw2();
-  TrkPhi_weighted[ibin][ibin2][ibin3]->Add(more_hists->TrkPhi_weighted[ibin][ibin2][ibin3], wt);
+ 	 TrkPhi_weighted[ibin][ibin2][ibin3]->Sumw2();   more_hists->TrkPhi_weighted[ibin][ibin2][ibin3]->Sumw2();
+  	TrkPhi_weighted[ibin][ibin2][ibin3]->Add(more_hists->TrkPhi_weighted[ibin][ibin2][ibin3], wt);
 
 
 
@@ -2074,8 +2033,8 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
 	GenTrkPhi[ibin][ibin2][ibin3]->Sumw2();   more_hists->GenTrkPhi[ibin][ibin2][ibin3]->Sumw2();
 	GenTrkPhi[ibin][ibin2][ibin3]->Add(more_hists->GenTrkPhi[ibin][ibin2][ibin3], wt);
 
-  GenTrkPt[ibin][ibin2][ibin3]->Sumw2();   more_hists->GenTrkPt[ibin][ibin2][ibin3]->Sumw2();
-  GenTrkPt[ibin][ibin2][ibin3]->Add(more_hists->GenTrkPt[ibin][ibin2][ibin3], wt);
+  	GenTrkPt[ibin][ibin2][ibin3]->Sumw2();   more_hists->GenTrkPt[ibin][ibin2][ibin3]->Sumw2();
+  	GenTrkPt[ibin][ibin2][ibin3]->Add(more_hists->GenTrkPt[ibin][ibin2][ibin3], wt);
 
 
   /// bkg for inc tracks
@@ -2530,7 +2489,8 @@ void hist_class::Write()
 {
 
   TString parti_str = "";
-  if( parti >= 0 ) {
+  if( parti >= 0 ) 
+  {
     parti_str += "_part";
     parti_str +=  parti;
   }
@@ -2585,13 +2545,15 @@ void hist_class::Write()
   track_vz->Write();
   track_vz_weighted->Write();
 
-  for (int ibin2=0;ibin2<nPtBins;ibin2++){
+  for (int ibin2=0;ibin2<nPtBins;ibin2++)
+  {
     fullrecjet_aftercuts[ibin2]->Write();
     fullrefjet_aftercuts[ibin2]->Write();
   }
 
 
-  for (int ibin=0;ibin<nCBins;ibin++){
+  for (int ibin=0;ibin<nCBins;ibin++)
+  {
 
     jet_pT_hist[ibin]->Write();
     jet_phi_hist[ibin]->Write();
@@ -2605,19 +2567,17 @@ void hist_class::Write()
     SubJetEta_hist[ibin]->Write();
     dPhi_leadingjet_hist[ibin]->Write();
     dPhi_subleadingjet_hist[ibin]->Write();
-
     JetShapeDiffParticles_bkg_1D_total[ibin]->Write();
     JetShapeIntegratedParticles_bkg_1D_total[ibin]->Write();
     JetEnergy_gen_vs_rec[ibin]->Write();
 
 
-    for (int ibin3=0;ibin3<nTrkPtBins;ibin3++){
-
-      rr_gen_leadingjet[ibin][ibin3]->Write();
-      rr_reco_leadingjet[ibin][ibin3]->Write();
-      rr_reco_leadingjet_weighted[ibin][ibin3]->Write();
-
-    }
+ 	   for (int ibin3=0;ibin3<nTrkPtBins;ibin3++)
+    	{
+      	rr_gen_leadingjet[ibin][ibin3]->Write();
+      	rr_reco_leadingjet[ibin][ibin3]->Write();
+      	rr_reco_leadingjet_weighted[ibin][ibin3]->Write();
+    	}
 
 
     dPhi_hist[ibin]->Write();
@@ -2625,41 +2585,40 @@ void hist_class::Write()
     Aj[ibin]->Write();
     dPhi_vector[ibin]->Write();
 
-    for (int ibin2=0;ibin2<nPtBins;ibin2++){
+	for (int ibin2=0;ibin2<nPtBins;ibin2++)
+	{
+        EtaRef_bkg_pt[ibin][ibin2]->Write();
+        EtaRef_bkg_pt_weighted[ibin][ibin2]->Write();
 
+        ThirdJetPt_hist[ibin][ibin2]->Write();
+        ThirdJetPhi_hist[ibin][ibin2]->Write();
+        ThirdJetEta_hist[ibin][ibin2]->Write();
 
-      EtaRef_bkg_pt[ibin][ibin2]->Write();
-      EtaRef_bkg_pt_weighted[ibin][ibin2]->Write();
-
-      ThirdJetPt_hist[ibin][ibin2]->Write();
-      ThirdJetPhi_hist[ibin][ibin2]->Write();
-      ThirdJetEta_hist[ibin][ibin2]->Write();
-
-      radius_hist[ibin][ibin2]->Write();
-      radius_hist_mine[ibin][ibin2]->Write();
-      radius_hist_mine2[ibin][ibin2]->Write();
-      radius_hist_mine3[ibin][ibin2]->Write();
+      	radius_hist[ibin][ibin2]->Write();
+      	radius_hist_mine[ibin][ibin2]->Write();
+      	radius_hist_mine2[ibin][ibin2]->Write();
+      	radius_hist_mine3[ibin][ibin2]->Write();
 
 
       //dPhi_hist[ibin][ibin2]->Write();
-      dEta_hist[ibin][ibin2]->Write();
+      	dEta_hist[ibin][ibin2]->Write();
       //dPhi_after_hist[ibin][ibin2]->Write();
 
 
-      all_jets_corrpT[ibin][ibin2]->Write();
-      all_jets_phi[ibin][ibin2]->Write();
-      all_jets_eta[ibin][ibin2]->Write();
-      only_leadingjets_corrpT[ibin][ibin2]->Write();
-      only_leadingjets_phi[ibin][ibin2]->Write();
-      only_leadingjets_eta[ibin][ibin2]->Write();
-      only_subleadingjets_corrpT[ibin][ibin2]->Write();
-      only_subleadingjets_phi[ibin][ibin2]->Write();
-      only_subleadingjets_eta[ibin][ibin2]->Write();
+      	all_jets_corrpT[ibin][ibin2]->Write();
+      	all_jets_phi[ibin][ibin2]->Write();
+      	all_jets_eta[ibin][ibin2]->Write();
+      	only_leadingjets_corrpT[ibin][ibin2]->Write();
+      	only_leadingjets_phi[ibin][ibin2]->Write();
+      	only_leadingjets_eta[ibin][ibin2]->Write();
+      	only_subleadingjets_corrpT[ibin][ibin2]->Write();
+      	only_subleadingjets_phi[ibin][ibin2]->Write();
+      	only_subleadingjets_eta[ibin][ibin2]->Write();
 
 
-      neutral_cand_pT_hist[ibin][ibin2]->Write();
-      neutral_cand_phi_hist[ibin][ibin2]->Write();
-      neutral_cand_eta_hist[ibin][ibin2]->Write();
+      	neutral_cand_pT_hist[ibin][ibin2]->Write();
+      	neutral_cand_phi_hist[ibin][ibin2]->Write();
+      	neutral_cand_eta_hist[ibin][ibin2]->Write();
       photons_cand_pT_hist[ibin][ibin2]->Write();
       photons_cand_phi_hist[ibin][ibin2]->Write();
       photons_cand_eta_hist[ibin][ibin2]->Write();
@@ -2883,7 +2842,8 @@ void hist_class::Write()
       emixed_jetphi[ibin][ibin2]->Write();
 
 
-      for (int ibin3=0;ibin3<nTrkPtBins;ibin3++){
+      for (int ibin3=0;ibin3<nTrkPtBins;ibin3++)
+      {
 
 	hJetTrackSignalBackground[ibin][ibin2][ibin3]->Write();
 	hJetTrackBackground[ibin][ibin2][ibin3]->Write();
@@ -2892,38 +2852,38 @@ void hist_class::Write()
 	hJetTrackBackground_notrkcorr[ibin][ibin2][ibin3]->Write();
 
 	Ntracks[ibin][ibin2][ibin3]->Write();
-  Ngen[ibin][ibin2][ibin3]->Write();
-  Ntracks_awayside[ibin][ibin2][ibin3]->Write();
+  	Ngen[ibin][ibin2][ibin3]->Write();
+  	Ntracks_awayside[ibin][ibin2][ibin3]->Write();
 
 	TrkPt[ibin][ibin2][ibin3]->Write();
 	TrkEta[ibin][ibin2][ibin3]->Write();
-  TrkPhi[ibin][ibin2][ibin3]->Write();
+  	TrkPhi[ibin][ibin2][ibin3]->Write();
 
-  TrkPt_weighted[ibin][ibin2][ibin3]->Write();
-  TrkEta_weighted[ibin][ibin2][ibin3]->Write();
-  TrkPhi_weighted[ibin][ibin2][ibin3]->Write();
+  	TrkPt_weighted[ibin][ibin2][ibin3]->Write();
+  	TrkEta_weighted[ibin][ibin2][ibin3]->Write();
+  	TrkPhi_weighted[ibin][ibin2][ibin3]->Write();
 
 
 	GenTrkPt[ibin][ibin2][ibin3]->Write();
-  GenTrkEta[ibin][ibin2][ibin3]->Write();
-  GenTrkPhi[ibin][ibin2][ibin3]->Write();
+ 	GenTrkEta[ibin][ibin2][ibin3]->Write();
+ 	GenTrkPhi[ibin][ibin2][ibin3]->Write();
 
-  GenTrkEta_bkg[ibin][ibin2][ibin3]->Write();
-  GenTrkPhi_bkg[ibin][ibin2][ibin3]->Write();
-  TrkEta_bkg[ibin][ibin2][ibin3]->Write();
-  TrkPhi_bkg[ibin][ibin2][ibin3]->Write();
+  	GenTrkEta_bkg[ibin][ibin2][ibin3]->Write();
+  	GenTrkPhi_bkg[ibin][ibin2][ibin3]->Write();
+  	TrkEta_bkg[ibin][ibin2][ibin3]->Write();
+  	TrkPhi_bkg[ibin][ibin2][ibin3]->Write();
 
 	
-  hJetGenTrackSignalBackground[ibin][ibin2][ibin3]->Write();
-  hJetGenTrackBackground[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackSignalBackground[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackBackground[ibin][ibin2][ibin3]->Write();
 
-  hJetGenTrackSignalBackground_pythia[ibin][ibin2][ibin3]->Write();
-  hJetGenTrackSignalBackground_hydjet[ibin][ibin2][ibin3]->Write();
-  hJetGenTrackSignalBackground_hydro[ibin][ibin2][ibin3]->Write();
-  hJetGenTrackSignalBackground_minijets[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackSignalBackground_pythia[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackSignalBackground_hydjet[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackSignalBackground_hydro[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackSignalBackground_minijets[ibin][ibin2][ibin3]->Write();
 
-  hJetGenTrackBackground_pythia[ibin][ibin2][ibin3]->Write();
-  hJetGenTrackBackground_hydjet[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackBackground_pythia[ibin][ibin2][ibin3]->Write();
+      hJetGenTrackBackground_hydjet[ibin][ibin2][ibin3]->Write();
 
 
       } /// ibin3
@@ -2968,7 +2928,7 @@ int main(int argc, char *argv[])
     assert(trkPtCut > 0. && trkPtCut < 5.);
     std::cout << "Running with trkPtCut " << trkPtCut << " and npart: " << npart << std::endl;
     
-
+assert(("Length can't possibly be negative! Tell jsmith",  2>1));
   if(dataset_type_code == e_Data2011 ) is_data = true;
 
   else if( dataset_type_code == e_HydJet30 || dataset_type_code == e_HydJet50 || dataset_type_code == e_HydJet80|| dataset_type_code == e_HydJet100|| dataset_type_code == e_HydJet120|| dataset_type_code == e_HydJet170|| dataset_type_code == e_HydJet200 || dataset_type_code == e_HydJet250 || dataset_type_code == e_HydJet300) is_data =false;
@@ -3154,9 +3114,9 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
       TProfile2D *p_fake_accept[npt];
       TProfile *p_fake_pt[npt];
       TProfile *p_fake_rmin[npt];
-
+//cout << "MZ is working" << endl;
       for(int ipt=0; ipt<npt;ipt++){
-//MZ//Fixed the file path//        f_eff[ipt]= new TFile(Form("../../TrackCorrectionTables_FixedByMIT/akVs3Calo_20140920/eff/eff_pt%d_%d_cent%d_%d.root",(int)(ptmin[ipt]*100),(int)(ptmax[ipt]*100),(int)(0.5*cent_min[ipt]),(int)(0.5*cent_max[ipt])));
+//MZ//Fixed file path//        f_eff[ipt]= new TFile(Form("../../TrackCorrectionTables_FixedByMIT/akVs3Calo_20140920/eff/eff_pt%d_%d_cent%d_%d.root",(int)(ptmin[ipt]*100),(int)(ptmax[ipt]*100),(int)(0.5*cent_min[ipt]),(int)(0.5*cent_max[ipt])));
         f_eff[ipt]= new TFile(Form("../TrackCorrectionTables/akVs3Calo_20140920/eff/eff_pt%d_%d_cent%d_%d.root",(int)(ptmin[ipt]*100),(int)(ptmax[ipt]*100),(int)(0.5*cent_min[ipt]),(int)(0.5*cent_max[ipt])));
 
         p_eff_cent[ipt]=(TProfile*)f_eff[ipt]->Get("p_eff_cent");
@@ -3164,7 +3124,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
         p_eff_accept[ipt]=(TProfile2D*)f_eff[ipt]->Get("p_eff_acceptance");
         p_eff_rmin[ipt]=(TProfile*)f_eff[ipt]->Get("p_eff_rmin");
 
-//MZ//Fixed the file path//        f_fake[ipt]= new TFile(Form("../../TrackCorrectionTables_FixedByMIT/akVs3Calo_20140920/fake/fake_pt%d_%d_cent%d_%d.root",(int)(ptmin[ipt]*100),(int)(ptmax[ipt]*100),(int)(0.5*cent_min[ipt]),(int)(0.5*cent_max[ipt])));
+//MZ//Fixed file path below//        f_fake[ipt]= new TFile(Form("../../TrackCorrectionTables_FixedByMIT/akVs3Calo_20140920/fake/fake_pt%d_%d_cent%d_%d.root",(int)(ptmin[ipt]*100),(int)(ptmax[ipt]*100),(int)(0.5*cent_min[ipt]),(int)(0.5*cent_max[ipt])));
         f_fake[ipt]= new TFile(Form("../TrackCorrectionTables/akVs3Calo_20140920/fake/fake_pt%d_%d_cent%d_%d.root",(int)(ptmin[ipt]*100),(int)(ptmax[ipt]*100),(int)(0.5*cent_min[ipt]),(int)(0.5*cent_max[ipt])));
 
         p_fake_cent[ipt]=(TProfile*)f_fake[ipt]->Get("p_fake_cent");
@@ -3176,6 +3136,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
       /////////////////////
 
  /// assert(parti <= (int) file_names.size() );
+ ///cout << "MZ I am working " << endl;
   for(int fi = 0; fi < (int) file_names.size(); fi++) {
     //if( parti >= 0 && parti != fi ) continue;
     TFile *my_file = TFile::Open(file_names.at(fi));
@@ -3201,8 +3162,9 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
     ///==========================   Event Loop starts ===================================
 
       
-      int min_ev_num = 0.;      int max_ev_num = 0;
-      min_ev_num = npart*10000;  //MZ the code uns over 10000 events only, and it takes some long time!
+ //cout << "MZ I am working " << endl;
+      int min_ev_num = 0;      int max_ev_num = 0;
+      min_ev_num = npart*10000;
       max_ev_num = (npart+1)*10000;
       
       if( npart == e_AllParts ) {
@@ -3222,6 +3184,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
       if (evi%1000==0) std::cout << " I am running on file " << fi << " of " << ((int) file_names.size()) << ", evi: " << evi << " of " << n_evt <<  "  pthat : " << pthat << "  pthatmax : " << pthatmax  << std::endl;
 
 
+ //cout << "MZ I am working " << endl;
       if( !is_data ) {
         double pthat_new = my_primary->pthat;
         if (pthat_new > pthatmax) continue;
@@ -3247,6 +3210,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
         float num = hWeight_vtx->GetBinContent(vtx_bin);  /// DATA
         float denom = hWeight_MC_vtx->GetBinContent(vtx_bin); /// MC
 
+ cout << "MZ I am working " << endl;
         double wvz = 1.;
         if( denom > 0.0001 ) wvz = num / denom;
 
