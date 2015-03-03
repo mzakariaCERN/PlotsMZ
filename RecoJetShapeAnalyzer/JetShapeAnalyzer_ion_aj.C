@@ -102,7 +102,7 @@ int npart = -999;
 float CBins[nCBins+1] = {0, 20, 60, 100, 200}; //MZ silly naming convention
 TString CBin_strs[nCBins+1] = {"Cent0", "Cent10", "Cent30", "Cent50", "Cent100"};
 
-float CentralityBins[nCentralityBins+1] = {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200};
+float CentralityBins[nCentralityBins+1] = {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200};  //according to binning in PAS
 
 
 float PtBins[nPtBins+1] = {0, 300};
