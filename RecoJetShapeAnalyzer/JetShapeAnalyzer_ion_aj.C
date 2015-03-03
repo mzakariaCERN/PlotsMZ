@@ -2920,15 +2920,15 @@ int main(int argc, char *argv[])
   gROOT->ProcessLine("#include <vector>");
 
     assert(argc == 4);
-    dataset_type_code = atoi(argv[1]);    //// pick datasets you want to run over
-    trkPtCut = atof(argv[2]);
-    npart = atoi(argv[3]);
+    dataset_type_code = atoi(argv[1]);    //// pick datasets you want to run over (0 is data Pb, 1 is Hydjet30, etc)
+    trkPtCut = atof(argv[2]); /// cut on associated pT
+    npart = atoi(argv[3]);  /// part of 10000 events 
     assert(npart >= 0 && npart < e_n_npart_types);
     // assert(npart >= 0);
     assert(trkPtCut > 0. && trkPtCut < 5.);
     std::cout << "Running with trkPtCut " << trkPtCut << " and npart: " << npart << std::endl;
     
-assert(("Length can't possibly be negative! Tell jsmith",  2>1));
+//assert(("Length can't possibly be negative! Tell jsmith",  2>1));
   if(dataset_type_code == e_Data2011 ) is_data = true;
 
   else if( dataset_type_code == e_HydJet30 || dataset_type_code == e_HydJet50 || dataset_type_code == e_HydJet80|| dataset_type_code == e_HydJet100|| dataset_type_code == e_HydJet120|| dataset_type_code == e_HydJet170|| dataset_type_code == e_HydJet200 || dataset_type_code == e_HydJet250 || dataset_type_code == e_HydJet300) is_data =false;
