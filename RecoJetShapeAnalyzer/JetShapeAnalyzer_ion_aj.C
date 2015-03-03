@@ -3210,7 +3210,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
         float num = hWeight_vtx->GetBinContent(vtx_bin);  /// DATA
         float denom = hWeight_MC_vtx->GetBinContent(vtx_bin); /// MC
 
- cout << "MZ I am working " << endl;
+// cout << "MZ I am working " << endl;
         double wvz = 1.;
         if( denom > 0.0001 ) wvz = num / denom;
 
