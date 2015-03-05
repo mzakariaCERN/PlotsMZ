@@ -24,6 +24,7 @@
 #include "TChain.h"
 #include <TString.h>
 #include <TCut.h>
+#include <TLegend.h>
 
 using namespace std;
 
@@ -570,7 +571,10 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
 
   NumberOfMatches = new TH1F((TString) (desc + "_NumberOfMatches"), "", 100, 0., 100.);     NumberOfMatches->Sumw2();
 
-  NEvents = new TH1F((TString) (desc + "_Nevents"), "", 100, 0., 100.);     NEvents->Sumw2(); NEvents_test = new TH1F((TString) (desc + "_Nevents_test"), "", 100, 0., 100.);     NEvents_test->Sumw2();
+  NEvents = new TH1F((TString) (desc + "_Nevents"), "This counts the number of events", 100, 0., 100.);   
+  NEvents->Sumw2(); 
+  NEvents_test = new TH1F((TString) (desc + "_Nevents_test"), "", 100, 0., 100.);  
+  NEvents_test->Sumw2();
   NEvents_after_noise = new TH1F((TString) (desc + "_Nevents_after_noise"), "", 100, 0., 100.);     NEvents_after_noise->Sumw2();
   NEvents_after_spike = new TH1F((TString) (desc + "_Nevents_after_spike"), "", 100, 0., 100.);     NEvents_after_spike->Sumw2();
 
@@ -1265,7 +1269,10 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
   NEvents->Sumw2();   more_hists->NEvents->Sumw2();
   NEvents->Add(more_hists->NEvents, wt);
 
-  NEvents_test->Sumw2();   more_hists->NEvents_test->Sumw2();
+  
+  
+  
+  
   NEvents_test->Add(more_hists->NEvents_test, wt);
 
   NEvents_after_noise->Add(more_hists->NEvents_after_noise, wt);
