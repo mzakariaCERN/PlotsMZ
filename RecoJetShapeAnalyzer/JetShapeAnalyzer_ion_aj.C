@@ -52,7 +52,7 @@ int parti = -999;
 bool is_data = false;
 bool test_it = false;
 bool is_selected = true;
-bool is_dijet = false;
+bool is_dijet = true ;    //MZ it doesn't change throughout the code! This code is just inclusive jet
 bool is_leadingjet = false;
 bool is_subleadingjet = false;
 
@@ -573,15 +573,22 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
 
   NEvents = new TH1F((TString) (desc + "_Nevents"), "This counts the number of events", 100, 0., 100.);   
   NEvents->Sumw2(); 
-  NEvents_test = new TH1F((TString) (desc + "_Nevents_test"), "", 100, 0., 100.);  
+
+  NEvents_test = new TH1F((TString) (desc + "_Nevents_test"), " Onle for Data... Onle for Data.....", 100, 0., 100.);  
   NEvents_test->Sumw2();
-  NEvents_after_noise = new TH1F((TString) (desc + "_Nevents_after_noise"), "", 100, 0., 100.);     NEvents_after_noise->Sumw2();
-  NEvents_after_spike = new TH1F((TString) (desc + "_Nevents_after_spike"), "", 100, 0., 100.);     NEvents_after_spike->Sumw2();
+  
+  NEvents_after_noise = new TH1F((TString) (desc + "_Nevents_after_noise"), "Only for data, firing pHBHENoiseFilter", 100, 0., 100.);     
+  NEvents_after_noise->Sumw2();
+  
+  NEvents_after_spike = new TH1F((TString) (desc + "_Nevents_after_spike"), "Events suriving |vz| < 15 ", 100, 0., 100.);     
+  NEvents_after_spike->Sumw2();
 
   NEvents_dijets = new TH1F((TString) (desc + "_Nevents_dijets"), "", 100, 0., 100.);     NEvents_dijets->Sumw2();
   NEvents_after_dphi = new TH1F((TString) (desc + "_Nevents_after_dphi"), "", 100, 0., 100.);     NEvents_after_dphi->Sumw2();
-  NEvents_before_dphi = new TH1F((TString) (desc + "_Nevents_before_dphi"), "", 100, 0., 100.);     NEvents_before_dphi->Sumw2();
-  NEvents_after_trigger = new TH1F((TString) (desc + "_Nevents_after_trigger"), "", 100, 0., 100.);     NEvents_after_trigger->Sumw2();
+  NEvents_before_dphi = new TH1F((TString) (desc + "_Nevents_before_dphi"), "Only if there is Dijet", 100, 0., 100.);     
+NEvents_before_dphi->Sumw2();
+
+  NEvents_after_trigger = new TH1F((TString) (desc + "_Nevents_after_trigger"), "Events after trigger, should be empty for MC", 100, 0., 100.);     NEvents_after_trigger->Sumw2();
 
 
   AllJetPt_raw_hist = new TH1F((TString) (desc + "_AllJetPt_raw_hist"), "", 100, 0., 500.);     AllJetPt_raw_hist->Sumw2();
@@ -622,10 +629,13 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
     jet_phi_hist[ibin]->Sumw2();
     jet_eta_hist[ibin] = new TH1F((TString) (desc + "_jet_eta_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 50, -5., 5.);     jet_eta_hist[ibin]->Sumw2();
     jet_corrpT_hist[ibin] = new TH1F((TString) (desc + "_jet_corrpT_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 25, 0., 500.);     jet_corrpT_hist[ibin]->Sumw2();
-    LeadingJetPt_hist[ibin] = new TH1F((TString) (desc + "_LeadingJetPt_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 25, 0., 500.);     LeadingJetPt_hist[ibin]->Sumw2();
-    LeadingJetPhi_hist[ibin] = new TH1F((TString) (desc + "_LeadingJetPhi_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 72, -TMath::Pi(),TMath::Pi());     LeadingJetPhi_hist[ibin]->Sumw2();
+	LeadingJetPt_hist[ibin] = new TH1F((TString) (desc + "_LeadingJetPt_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 25, 0., 500.); 
+	LeadingJetPt_hist[ibin]->Sumw2();
+	LeadingJetPhi_hist[ibin] = new TH1F((TString) (desc + "_LeadingJetPhi_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 72, -TMath::Pi(),TMath::Pi());     
+	LeadingJetPhi_hist[ibin]->Sumw2();
     LeadingJetEta_hist[ibin] = new TH1F((TString) (desc + "_LeadingJetEta_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 50, -5., 5.);     LeadingJetEta_hist[ibin]->Sumw2();
-    SubJetPt_hist[ibin] = new TH1F((TString) (desc + "_SubJetPt_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 25, 0., 500.);     SubJetPt_hist[ibin]->Sumw2();
+	SubJetPt_hist[ibin] =  new TH1F((TString) (desc + "_SubJetPt_hist_"      + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 25, 0., 500.);  
+	SubJetPt_hist[ibin]->Sumw2();
     SubJetPhi_hist[ibin] = new TH1F((TString) (desc + "_SubJetPhi_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 72, -TMath::Pi(),TMath::Pi());     SubJetPhi_hist[ibin]->Sumw2();
     SubJetEta_hist[ibin] = new TH1F((TString) (desc + "_SubJetEta_hist_" + CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 50, -5., 5.);     SubJetEta_hist[ibin]->Sumw2();
     dPhi_leadingjet_hist[ibin] = new TH1F((TString) (desc + "_dPhi_leadingjet_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 30,0,3.14159);     dPhi_leadingjet_hist[ibin]->Sumw2();
@@ -635,7 +645,9 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
     JetEnergy_gen_vs_rec[ibin] = new TH2F((TString) (desc + "_JetEnergy_gen_vs_rec"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 500, 0, 1000, 500, 0, 1000);     JetEnergy_gen_vs_rec[ibin]->Sumw2();
     dPhi_hist[ibin] = new TH1F((TString) (desc + "_dPhi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]), "", 30, 0.,TMath::Pi());     dPhi_hist[ibin]->Sumw2();
     dPhi_after_hist[ibin] = new TH1F((TString) (desc + "_dPhi_after_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 30,0,3.14159);     dPhi_after_hist[ibin]->Sumw2();
-    dPhi_vector[ibin] = new TH1D((TString) (desc + "_dPhi_vector"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "", 60,-2*TMath::Pi(),2*TMath::Pi());     dPhi_vector[ibin]->Sumw2();
+    
+    dPhi_vector[ibin] = new TH1D((TString) (desc + "_dPhi_vector"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] ), "Saves dPhi between jets and tracks", 60,-2*TMath::Pi(),2*TMath::Pi());     
+    dPhi_vector[ibin]->Sumw2();
     
     for (int ibin3=0;ibin3<nTrkPtBins;ibin3++)
     {
@@ -663,12 +675,17 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
       dPhi_jet_track_ptweight[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_jet_track_ptweight"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 30,0,3.14159);     dPhi_jet_track_ptweight[ibin][ibin2]->Sumw2();
       // dPhi_hist[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 6);     // dPhi_hist[ibin][ibin2]->Sumw2();
       //dPhi_after_hist[ibin][ibin2] = new TH1F((TString) (desc + "_dPhi_after_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 6);     //dPhi_after_hist[ibin][ibin2]->Sumw2();
-      all_jets_corrpT[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_corrpT"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, 0., 500.);     all_jets_corrpT[ibin][ibin2]->Sumw2();
-      all_jets_phi[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_phi"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 72, -TMath::Pi(), TMath::Pi());     all_jets_phi[ibin][ibin2]->Sumw2();
-      all_jets_eta[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_eta"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, -5., 5.);     all_jets_eta[ibin][ibin2]->Sumw2();
+	all_jets_corrpT[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_corrpT"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "Jet pT from a separate file", 50, 0., 500.);     
+	all_jets_corrpT[ibin][ibin2]->Sumw2();
+	all_jets_phi[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_phi"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "Jet Phi coming from a separate file", 72, -TMath::Pi(), TMath::Pi());   
+	all_jets_phi[ibin][ibin2]->Sumw2();
+      all_jets_eta[ibin][ibin2] = new TH1F((TString) (desc + "_all_jets_eta"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, -5., 5.); 
+    all_jets_eta[ibin][ibin2]->Sumw2();
       //// leading jet histograms
-      only_leadingjets_corrpT[ibin][ibin2] = new TH1F((TString) (desc + "_only_leadingjets_corrpT"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 500.);     only_leadingjets_corrpT[ibin][ibin2]->Sumw2();
-      only_leadingjets_phi[ibin][ibin2] = new TH1F((TString) (desc + "_only_leadingjets_phi"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 36, 0.,TMath::Pi());     only_leadingjets_phi[ibin][ibin2]->Sumw2();
+	only_leadingjets_corrpT[ibin][ibin2] = new TH1F((TString) (desc + "_only_leadingjets_corrpT"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "Saves the pT of the highest jet", 100, 0., 500.);    
+	only_leadingjets_corrpT[ibin][ibin2]->Sumw2();
+	only_leadingjets_phi[ibin][ibin2] = new TH1F((TString) (desc + "_only_leadingjets_phi"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "Sves the Phi of the hardest jet", 36, 0.,TMath::Pi());    
+ only_leadingjets_phi[ibin][ibin2]->Sumw2();
       only_leadingjets_eta[ibin][ibin2] = new TH1F((TString) (desc + "_only_leadingjets_eta"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 50, -5., 5.);     only_leadingjets_eta[ibin][ibin2]->Sumw2();
       all_cand_pT_hist[ibin][ibin2] = new TH1F((TString) (desc + "_all_cand_pT_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 100, 0., 500.);     all_cand_pT_hist[ibin][ibin2]->Sumw2();
       all_cand_phi_hist[ibin][ibin2] = new TH1F((TString) (desc + "_all_cand_phi_hist"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", 36, 0.,TMath::Pi());     all_cand_phi_hist[ibin][ibin2]->Sumw2();
@@ -959,7 +976,7 @@ hist_class::hist_class(TString the_desc, bool is_it_data) {
 //// bkg pt spectras
 
 
-EtaRef_bkg_pt[ibin][ibin2] = new TH1F((TString) (desc + "_EtaRef_bkg_pt"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", nPtBintrk,ptBintrk); EtaRef_bkg_pt[ibin][ibin2]->Sumw2();
+EtaRef_bkg_pt[ibin][ibin2] = new TH1F((TString) (desc + "_EtaRef_bkg_pt"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "Tracks, with pT Delta r < 0.3", nPtBintrk,ptBintrk); EtaRef_bkg_pt[ibin][ibin2]->Sumw2();
 
 EtaRef_bkg_pt_weighted[ibin][ibin2] = new TH1F((TString) (desc + "_EtaRef_bkg_pt_weighted"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]), "", nPtBintrk,ptBintrk); EtaRef_bkg_pt_weighted[ibin][ibin2]->Sumw2();
     
@@ -1362,8 +1379,11 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
     LeadingJetPhi_hist[ibin]->Add(more_hists->LeadingJetPhi_hist[ibin], wt);
     LeadingJetEta_hist[ibin]->Sumw2();   more_hists->LeadingJetEta_hist[ibin]->Sumw2();
     LeadingJetEta_hist[ibin]->Add(more_hists->LeadingJetEta_hist[ibin], wt);
-    SubJetPt_hist[ibin]->Sumw2();   more_hists->SubJetPt_hist[ibin]->Sumw2();
-    SubJetPt_hist[ibin]->Add(more_hists->SubJetPt_hist[ibin], wt);
+    
+	SubJetPt_hist[ibin]->Sumw2();   
+	more_hists->SubJetPt_hist[ibin]->Sumw2();
+	SubJetPt_hist[ibin]->Add(more_hists->SubJetPt_hist[ibin], wt);
+
     SubJetPhi_hist[ibin]->Sumw2();   more_hists->SubJetPhi_hist[ibin]->Sumw2();
     SubJetPhi_hist[ibin]->Add(more_hists->SubJetPhi_hist[ibin], wt);
     SubJetEta_hist[ibin]->Sumw2();   more_hists->SubJetEta_hist[ibin]->Sumw2();
@@ -1436,18 +1456,25 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
 
 
 
-      all_jets_corrpT[ibin][ibin2]->Sumw2();   more_hists->all_jets_corrpT[ibin][ibin2]->Sumw2();
-      all_jets_corrpT[ibin][ibin2]->Add(more_hists->all_jets_corrpT[ibin][ibin2], wt);
-      all_jets_phi[ibin][ibin2]->Sumw2();   more_hists->all_jets_phi[ibin][ibin2]->Sumw2();
-      all_jets_phi[ibin][ibin2]->Add(more_hists->all_jets_phi[ibin][ibin2], wt);
+	all_jets_corrpT[ibin][ibin2]->Sumw2();   
+	more_hists->all_jets_corrpT[ibin][ibin2]->Sumw2();
+	all_jets_corrpT[ibin][ibin2]->Add(more_hists->all_jets_corrpT[ibin][ibin2], wt);
+      
+	all_jets_phi[ibin][ibin2]->Sumw2();   
+	more_hists->all_jets_phi[ibin][ibin2]->Sumw2();
+     	all_jets_phi[ibin][ibin2]->Add(more_hists->all_jets_phi[ibin][ibin2], wt);
+
       all_jets_eta[ibin][ibin2]->Sumw2();   more_hists->all_jets_eta[ibin][ibin2]->Sumw2();
       all_jets_eta[ibin][ibin2]->Add(more_hists->all_jets_eta[ibin][ibin2], wt);
 
       //// leading jet histograms
-      only_leadingjets_corrpT[ibin][ibin2]->Sumw2();   more_hists->only_leadingjets_corrpT[ibin][ibin2]->Sumw2();
-      only_leadingjets_corrpT[ibin][ibin2]->Add(more_hists->only_leadingjets_corrpT[ibin][ibin2], wt);
-      only_leadingjets_phi[ibin][ibin2]->Sumw2();   more_hists->only_leadingjets_phi[ibin][ibin2]->Sumw2();
-      only_leadingjets_phi[ibin][ibin2]->Add(more_hists->only_leadingjets_phi[ibin][ibin2], wt);
+	only_leadingjets_corrpT[ibin][ibin2]->Sumw2();   
+	more_hists->only_leadingjets_corrpT[ibin][ibin2]->Sumw2();
+	only_leadingjets_corrpT[ibin][ibin2]->Add(more_hists->only_leadingjets_corrpT[ibin][ibin2], wt);
+	
+only_leadingjets_phi[ibin][ibin2]->Sumw2();   more_hists->only_leadingjets_phi[ibin][ibin2]->Sumw2();
+      
+	only_leadingjets_phi[ibin][ibin2]->Add(more_hists->only_leadingjets_phi[ibin][ibin2], wt);
       only_leadingjets_eta[ibin][ibin2]->Sumw2();   more_hists->only_leadingjets_eta[ibin][ibin2]->Sumw2();
       only_leadingjets_eta[ibin][ibin2]->Add(more_hists->only_leadingjets_eta[ibin][ibin2], wt);
       all_cand_pT_hist[ibin][ibin2]->Sumw2();   more_hists->all_cand_pT_hist[ibin][ibin2]->Sumw2();
@@ -1620,7 +1647,8 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
 
 
       //// subleading jet histograms
-      only_subleadingjets_corrpT[ibin][ibin2]->Sumw2();   more_hists->only_subleadingjets_corrpT[ibin][ibin2]->Sumw2();
+	only_subleadingjets_corrpT[ibin][ibin2]->Sumw2();   
+	more_hists->only_subleadingjets_corrpT[ibin][ibin2]->Sumw2();
       only_subleadingjets_corrpT[ibin][ibin2]->Add(more_hists->only_subleadingjets_corrpT[ibin][ibin2], wt);
       only_subleadingjets_phi[ibin][ibin2]->Sumw2();   more_hists->only_subleadingjets_phi[ibin][ibin2]->Sumw2();
       only_subleadingjets_phi[ibin][ibin2]->Add(more_hists->only_subleadingjets_phi[ibin][ibin2], wt);
@@ -1830,7 +1858,8 @@ void hist_class::AddHists(hist_class *more_hists, float wt)
       track_gen_bkg_pT_hist_oocone[ibin][ibin2]->Sumw2();   more_hists->track_gen_bkg_pT_hist_oocone[ibin][ibin2]->Sumw2();
       track_gen_bkg_pT_hist_oocone[ibin][ibin2]->Add(more_hists->track_gen_bkg_pT_hist_oocone[ibin][ibin2], wt);
 
-      EtaRef_bkg_pt[ibin][ibin2]->Sumw2(); more_hists->EtaRef_bkg_pt[ibin][ibin2]->Sumw2();
+      EtaRef_bkg_pt[ibin][ibin2]->Sumw2(); 
+      more_hists->EtaRef_bkg_pt[ibin][ibin2]->Sumw2();
       EtaRef_bkg_pt[ibin][ibin2]->Add(more_hists->EtaRef_bkg_pt[ibin][ibin2], wt);
 
       EtaRef_bkg_pt_weighted[ibin][ibin2]->Sumw2(); more_hists->EtaRef_bkg_pt_weighted[ibin][ibin2]->Sumw2();
@@ -2612,8 +2641,9 @@ void hist_class::Write()
       //dPhi_after_hist[ibin][ibin2]->Write();
 
 
-      	all_jets_corrpT[ibin][ibin2]->Write();
-      	all_jets_phi[ibin][ibin2]->Write();
+      	all_jets_corrpT[ibin][ibin2]->Write();      	
+	all_jets_phi[ibin][ibin2]->Write();
+
       	all_jets_eta[ibin][ibin2]->Write();
       	only_leadingjets_corrpT[ibin][ibin2]->Write();
       	only_leadingjets_phi[ibin][ibin2]->Write();
@@ -2923,14 +2953,14 @@ float GetDatasetWeight(double n_evt_raw, double Xsection);//
 void GetBkgShape(TVector3 highest_jet_vec, TVector3 second_highest_jet_vec, TVector3& bkg_dir, TVector3& bkg_dir2);
 
 int main(int argc, char *argv[])
-{
+{/*{{{*/
   gROOT->ProcessLine("#include <vector>");
 
     assert(argc == 4);
     dataset_type_code = atoi(argv[1]);    //// pick datasets you want to run over (0 is data Pb, 1 is Hydjet30, etc)
     trkPtCut = atof(argv[2]); /// cut on associated pT
     npart = atoi(argv[3]);  /// part of 10000 events 
-    assert(npart >= 0 && npart < e_n_npart_types);
+    assert(npart >= 0 && npart < e_n_npart_types);   // this is the number of chuncs we run over, set manually to 1.3M)
     // assert(npart >= 0);
     assert(trkPtCut > 0. && trkPtCut < 5.);
     std::cout << "Running with trkPtCut " << trkPtCut << " and npart: " << npart << std::endl;
@@ -2986,12 +3016,12 @@ int main(int argc, char *argv[])
   }
   hists->NormalizeByCounts();
   hists->Write();
-}
+}/*}}}*/
 
 
 
 void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
-{
+{/*{{{*/
 
 
   double weight=1.;
@@ -3084,8 +3114,6 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
 
 //      std::cout << " myname " << ptwt[ibin]->GetName() << std::endl;
  ///     std::cout << " myname_mc " << ptwt_mc[ibin]->GetName() << std::endl;
-
-      
       ptwt[ibin]->Scale(1./ptwt[ibin]->Integral());
       ptwt_mc[ibin]->Scale(1./ptwt_mc[ibin]->Integral());
       ptwt[ibin]->Divide(ptwt_mc[ibin]);
@@ -3097,7 +3125,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
 
 
 
-  std::cout << "I am working\n";
+  std::cout << "I am working Inside Class StudyFiles \n";
 
 
 
@@ -3171,8 +3199,10 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
       
  //cout << "MZ I am working " << endl;
       int min_ev_num = 0;      int max_ev_num = 0;
-      min_ev_num = npart*10000;
-      max_ev_num = (npart+1)*10000;
+//MZ      min_ev_num = npart*10000;
+      max_ev_num = (npart+1)*1000;
+//MZ      max_ev_num = (npart+1)*10000;
+      max_ev_num = (npart+1)*1000;
       
       if( npart == e_AllParts ) {
           min_ev_num = 0;
@@ -3196,9 +3226,6 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
         double pthat_new = my_primary->pthat;
         if (pthat_new > pthatmax) continue;
       }
-
-
-
 
       //! Centrality reweighting function
       fcen->SetParameters(1.98261e-02,5.55963e+00,-1.34951e-01,1.70895e-03,-9.28386e-05);
@@ -3287,8 +3314,10 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
       int second_highest_idx=-1 ;
       int highest_idx=-1 ;
 
+//MZ //if(!is_dijet)
+//std::cout << "this is an inclusive event" << std::endl;
       if(is_dijet) {
-
+std::cout << "we are in a dijet" << endl;
         //search for leading jet
         for(int j4i = 0; j4i < my_primary->jtpt->size() ; j4i++) {
           double jet_pt= my_primary->jtpt->at(j4i);
@@ -3306,13 +3335,13 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
         //search for subleading jet
         for(int ijet = 0 ; ijet <my_primary->jtpt->size(); ijet++){
           if(ijet==highest_idx) continue ;
-          if(TMath::Abs(my_primary->jteta->at(ijet))> etacut) continue ;
+          if(TMath::Abs(my_primary->jteta->at(ijet)) > etacut) continue ;
           if(my_primary->jtpt->at(ijet)<50) continue ;
           if(my_primary->jtpt->at(ijet) > sublead_pt){
             sublead_pt=my_primary->jtpt->at(ijet);
             second_highest_idx=ijet;
             second_highest_jet_vec.SetPtEtaPhi(my_primary->jtpt->at(ijet), my_primary->jteta->at(ijet), my_primary->jtphi->at(ijet));
-
+std::cout << "Searching for subleading" << endl;
           }
         }  //end of subleading jet search
 
@@ -3323,8 +3352,8 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
 
 
         float dphi = highest_jet_vec.DeltaPhi(second_highest_jet_vec);
-        if (dphi>TMath::Pi()) dphi = 2*TMath::Pi() - dphi;
-
+        if (dphi>TMath::Pi()) 
+	dphi = 2*TMath::Pi() - dphi;
 
         for (int ibin=0;ibin<nCBins;ibin++){
           if (my_primary->hiBin >=CBins[ibin] && my_primary->hiBin<CBins[ibin+1]){
@@ -3387,13 +3416,11 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
 
       TVector3 jet_vec;
       TVector3 track_vec;
-      jet_vec.SetPtEtaPhi(0, 0, 0);
+      jet_vec.SetPtEtaPhi(0, 0, 0);   // MZ setting the jet pT, eta, and phi
       track_vec.SetPtEtaPhi(0, 0, 0);
 
       //// now loop over jets in the original events
       for(int j4i = 0; j4i < (int) my_primary->jtpt->size(); j4i++) {
-
-
 
         if(is_dijet){
           if ( (j4i != highest_idx) && (j4i != second_highest_idx) ) continue;  /// select 2 leading jet
@@ -3450,10 +3477,11 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
         my_hists->all_jets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i), wvz*wcen); 
         my_hists->all_jets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i), wvz*wcen); 
 
-        my_hists->only_leadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i),wvz*wcen*pt_reweight);
+        my_hists->only_leadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i), wvz*wcen*pt_reweight);
         my_hists->only_leadingjets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i), wvz*wcen);
         my_hists->only_leadingjets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i), wvz*wcen);
 
+//        my_hists->only_subleadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(DDDDDDD), wvz*wcen*pt_reweight);
 
         //// genparticles
 
@@ -3685,8 +3713,9 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
 
               jet_vec.SetPtEtaPhi(my_primary->jtpt->at(j4i), my_primary->jteta->at(j4i), my_primary->jtphi->at(j4i));
               track_vec.SetPtEtaPhi(my_primary->trkPt->at(tracks), my_primary->trkEta->at(tracks), my_primary->trkPhi->at(tracks));
-              double dphi_vector= jet_vec.DeltaPhi(track_vec);
-              my_hists->dPhi_vector[ibin]->Fill(dphi_vector);
+              
+		double dphi_vector= jet_vec.DeltaPhi(track_vec);
+              	my_hists->dPhi_vector[ibin]->Fill(dphi_vector);
 
               int ybin1 = my_hists->hJetTrackSignalBackground[ibin][ibin2][ibin3]->GetYaxis()->FindBin(-TMath::Pi());
               int ybin2 = my_hists->hJetTrackSignalBackground[ibin][ibin2][ibin3]->GetYaxis()->FindBin(TMath::Pi());
@@ -4085,7 +4114,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists)
 
   }  /// file loop
 
-}
+}/*}}}*/
 
 
 
