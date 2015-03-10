@@ -1,5 +1,5 @@
 /// reco PbPb
-	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  
+//	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  
 #include <iostream>
 #include "TFile.h"
 #include "TRandom.h"
