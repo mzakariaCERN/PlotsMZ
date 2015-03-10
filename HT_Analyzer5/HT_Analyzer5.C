@@ -1,4 +1,5 @@
 /// reco PbPb
+	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  
 #include <iostream>
 #include "TFile.h"
 #include "TRandom.h"
@@ -105,9 +106,9 @@ void calculate_efficiency(bool is_pp, double cent, double eta, double pt, double
 //*************************************************************
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]){  
  
-  assert(argc == 4);
+  assert(argc == 4);    //This code needs 3 parameters
   dataset_type_code = atoi(argv[1]);    //// pick datasets you want to run over
   
   trkPtCut = atof(argv[2]);   // MZ defined in mixing.h
@@ -364,13 +365,13 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
       Int_t hiBin = my_primary->hiBin;
       
-      my_hists->NEvents->Fill(hiBin/2.0);
+      my_hists->NEvents->Fill(hiBin/2.0); // Why do we save the centrality as NEvents? 
       
       vz  = my_primary->vz->at(0);
       wvz=1;
       wcen=1;
       
-      int ibin2 = 0;  int ibin3=0;
+      int ibin2 = 0;  int ibin3=0;  //ibin2 is used to loop over the leading jet
 
       if(is_data) {
 	int noise_event_selection = my_primary->pHBHENoiseFilter;
@@ -458,11 +459,11 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
       //Loop over cent bins, but we pick only the right one to fill for PbPb.  We fill all cent bins (properly weighted each time) for pp.
 
       for (int ibin=0;ibin<nCBins; ibin ++){
-	if (!is_pp&&(my_primary->hiBin<CBins[ibin] || my_primary->hiBin >=CBins[ibin+1])){ continue; }
+	if (!is_pp && (my_primary->hiBin<CBins[ibin] || my_primary->hiBin >= CBins[ibin+1])){ continue; }
 
 	
 	if(highest_idx > -1 && second_highest_idx > -1){ 
-	  my_hists->NEvents_dijets->Fill(hiBin/2.0);
+	  my_hists->NEvents_dijets->Fill(hiBin/2.0);   //MZ Selecting events with 2 RECOjets central, back to back
 	  my_hists->dPhi_hist[ibin]->Fill(fabs(dphi));
 	  double Aj = (my_primary->jtpt->at(highest_idx) - my_primary->jtpt->at(second_highest_idx))/(my_primary->jtpt->at(highest_idx) + my_primary->jtpt->at(second_highest_idx));
 	  my_hists->Aj[ibin]->Fill(Aj); 
@@ -473,35 +474,38 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
 	foundjet = kFALSE;
 	is_inclusive = kFALSE;
-	if( fabs(my_primary->jteta->at(j4i)) > etacut ) continue;
-	if(( my_primary->jtpt->at(j4i) > pTmincut )&&(my_primary->trackMax->at(j4i)/my_primary->jtpt->at(j4i) > 0.01)){ is_inclusive = kTRUE;  foundjet = kTRUE;} 
-	if( my_primary->jtpt->at(j4i) > pTmaxcut ) continue;
+	if( fabs(my_primary->jteta->at(j4i)) > etacut ) continue;  // Finding Central Jets
+	if(( my_primary->jtpt->at(j4i) > pTmincut ) && (my_primary->trackMax->at(j4i) / my_primary->jtpt->at(j4i) > 0.01)) //if we find a pT > 120, good quality jet
+	{ is_inclusive = kTRUE;  foundjet = kTRUE;} 
+	if( my_primary->jtpt->at(j4i) > pTmaxcut ) continue;             //jetpT < 300
 	
 
 	ibin2 = 0;  ibin3=0;
         
 	for(int pti = 0; pti < nPtBins; pti++) {
-	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  ibin2 = pti ;
+	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  
+		ibin2 = pti ;  //making sure the jet is between 100 and 300 (why?)
 	}
 
-	for (int ibin=0;ibin<nCBins; ibin ++){
-	  if (!is_pp&&(my_primary->hiBin<CBins[ibin] || my_primary->hiBin >=CBins[ibin+1])){ continue; }
+	for (int ibin=0; ibin < nCBins; ibin ++){
+	  if (!is_pp && (my_primary->hiBin < CBins[ibin] || my_primary->hiBin >= CBins[ibin+1]) )  //still uses the 0-200 centrality convintion but sets it back in naming 
+	{ continue; }
 
 	
 	  if(is_inclusive == kTRUE){
-	    my_hists->all_jets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i), wvz*wcen); 
+	    my_hists->all_jets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i), wvz*wcen);  //supposed to save all jets? there is a leak if we get few pt < 120 then pt > 120 (why?)
 	    my_hists->all_jets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i), wvz*wcen); 
 	    my_hists->all_jets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i), wvz*wcen); 
 	  }
 
-	  if(is_inclusive == kTRUE &&j4i!=highest_idx){
+	  if(is_inclusive == kTRUE && j4i!=highest_idx){
 	    my_hists->only_nonleadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i), wvz*wcen); 
 	    my_hists->only_nonleadingjets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i), wvz*wcen); 
 	    my_hists->only_nonleadingjets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i), wvz*wcen); 
 	  }
 
 	  if(j4i==highest_idx){
-	    my_hists->only_leadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i));
+	    my_hists->only_leadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i));  //these jets are not weighed (though named corrpT) (why?)
 	    my_hists->only_leadingjets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i));
 	    my_hists->only_leadingjets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i));
 	    /*
@@ -540,13 +544,14 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	  if(!is_pp) {cent = my_primary->hiBin; }
 
 	  for(int tracks =0; tracks < (int) my_primary->trkPt->size(); tracks++){
-	    if(fabs(my_primary->trkEta->at(tracks))>=trketamaxcut) continue;
-	    if (my_primary->highPurity->at(tracks)!=1) continue;
-	    if(my_primary->trkPt->at(tracks)<=trkPtCut) continue;
+	    if (fabs(my_primary->trkEta->at(tracks)) >= trketamaxcut) continue;
+	    if (my_primary->highPurity->at(tracks) != 1) continue;
+	    if (my_primary->trkPt->at(tracks) <= trkPtCut) continue;  //imposed through parameter
 
 	  
 	    for(int trkpti = 0; trkpti < nTrkPtBins; trkpti++) {
-	      if (my_primary->trkPt->at(tracks) >=TrkPtBins[trkpti] && my_primary->trkPt->at(tracks) < TrkPtBins[trkpti+1])  ibin3 = trkpti ;
+	      if (my_primary->trkPt->at(tracks) >= TrkPtBins[trkpti] && my_primary->trkPt->at(tracks) < TrkPtBins[trkpti+1])  
+		ibin3 = trkpti ;   //find which bin this track belongs to
 	    } /// trkpti loop
 	  
 
@@ -557,14 +562,16 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	    phi= my_primary->trkPhi->at(tracks);
 	    rmin = 99;
 
-	    for(int ijet=0;ijet<(int) my_primary->jtpt->size();ijet++){
+	    for(int ijet=0; ijet<(int) my_primary->jtpt->size(); ijet++){
 	      jeteta = my_primary->jteta->at(ijet);
 	      jetphi = my_primary->jtphi->at(ijet);
 	    
-	      if(fabs(jeteta)>2 || my_primary->jtpt->at(ijet)<50) continue;
+	      if(fabs(jeteta) > 2 || my_primary->jtpt->at(ijet) < 50) 
+		continue;
 	   
-	      r_reco=sqrt(pow(jeteta-eta,2)+pow(acos(cos(jetphi-phi)),2));
-	      if(r_reco<rmin)rmin=r_reco;
+	      r_reco = sqrt(pow(jeteta-eta,2) + pow(acos(cos(jetphi-phi)),2));
+	      if(r_reco<rmin)
+		rmin = r_reco;
 	    }
 
 	    calculate_efficiency(is_pp, cent, eta, pt, phi, rmin, fake, eff,secondary);
@@ -594,7 +601,6 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
 	    if(is_inclusive == kTRUE){
 	   
-	    
 	      deta = my_primary->jteta->at(j4i) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(j4i) - my_primary->trkPhi->at(tracks);
 	 
@@ -655,13 +661,13 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	jet_vzbin = vzbins->FindBin(my_primary->vz->at(0));
 
       
-	if(is_inclusive||j4i==highest_idx||j4i==second_highest_idx){  //only if we've got a trigger according to some criteria  AND we're not pp
+	if(is_inclusive || j4i == highest_idx || j4i == second_highest_idx){  //only if we've got a trigger according to some criteria  AND we're not pp
 
 	  //	  cout << "mixing now " << me <<" "<<nme<<endl;
 
 	  int startovercheck = 0;
 	  int mevi = 0;
-	  while(mevi< meptrig){  //
+	  while(mevi< meptrig){  // What is meptrig and why is it set to 50 (why?)
 	    me++;
 	  
 	    if(me>=nme){
