@@ -27,6 +27,7 @@ using namespace std;
 #define nTrkPtBins 5
 
 float trkPtCut=1;
+double Aj = 0;
 
 int parti = -999;
 bool is_data = false;
@@ -372,6 +373,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
       wcen=1;
       
       int ibin2 = 0;  int ibin3=0;  //ibin2 is used to loop over the leading jet
+	int ibin4 = 0;  //ibin4 is used to set Aj (if needed)
 
       if(is_data) {
 	int noise_event_selection = my_primary->pHBHENoiseFilter;
@@ -456,6 +458,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
       // Have dijet information.  Time to start filling bins.
       //----------------------------------------------------------------------------
 
+
       //Loop over cent bins, but we pick only the right one to fill for PbPb.  We fill all cent bins (properly weighted each time) for pp.
 
       for (int ibin=0;ibin<nCBins; ibin ++){
@@ -465,11 +468,20 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	if(highest_idx > -1 && second_highest_idx > -1){ 
 	  my_hists->NEvents_dijets->Fill(hiBin/2.0);   //MZ Selecting events with 2 RECOjets central, back to back
 	  my_hists->dPhi_hist[ibin]->Fill(fabs(dphi));
-	  double Aj = (my_primary->jtpt->at(highest_idx) - my_primary->jtpt->at(second_highest_idx))/(my_primary->jtpt->at(highest_idx) + my_primary->jtpt->at(second_highest_idx));
+	   Aj = (my_primary->jtpt->at(highest_idx) - my_primary->jtpt->at(second_highest_idx))/(my_primary->jtpt->at(highest_idx) + my_primary->jtpt->at(second_highest_idx));
+	//MZ Addeed
+	if(Aj < 0.22 || Aj > 0.33)
+	continue;
 	  my_hists->Aj[ibin]->Fill(Aj); 
 	}
       }
-      
+      	//MZ S
+	// Now we have the indices of the two hardest jets in a di-jet event, we only keep events with Aj within a limit
+	if(Aj < 0.22 || Aj > 0.33  )
+	continue;    //I hope this will leave out of the event loop
+	//MZ E
+
+
       for(int j4i = 0; j4i < (int) my_primary->jtpt->size(); j4i++) {
 
 	foundjet = kFALSE;
@@ -810,7 +822,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
       if(foundjet==kTRUE){my_hists->NEvents_test->Fill(hiBin/2.);}
     
       	  
-    } ///event loop for both dijets and inclusive jets
+    } ///event loop ends for both dijets and inclusive jets
      
   
   }//FILE LOOP
