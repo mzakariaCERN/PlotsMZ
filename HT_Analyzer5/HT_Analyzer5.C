@@ -27,8 +27,8 @@ using namespace std;
 #define nTrkPtBins 5
 
 float trkPtCut=1;
-double Aj = 0;
-
+//double Aj = 9999999;
+double Aj = -1;
 int parti = -999;
 bool is_data = false;
 
@@ -83,15 +83,12 @@ TProfile *p_fake_rmin_pp[npt_pp];
 TFile *f_secondary;
 TH2D * hsecondary;
 
-
 vector <double> dijet_pt;
 vector <double> dijet_eta;
 vector <double> dijet_phi;
 vector <double> dijet_evi;
 vector <double> dijet_vz;
 vector <double> dijet_cent;
-
-
 
 #include "hist_class_def_HT.h"
 
@@ -200,7 +197,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
 
   double cent, eta, pt, phi, rmin, r_reco, jeteta, jetphi, fake, eff, secondary, trkweight,vz, wvz, wcen, deta, dphi;
-  bool foundjet, is_inclusive;
+  bool foundjet = kFALSE, is_inclusive = kFALSE;  //initialized them just in case
 
 
   //----------------------------------------------------------------
@@ -283,7 +280,6 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
     pbpb_spectrum_sub[ibin] = (TH1D*)f_ref_pbpb_spectra->Get((TString)("all_jets_corrpT_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]+"_Pt100_Pt300"));
     pbpb_spectrum_sub[ibin]->SetName((TString)("PbPb_jet_specrum_sub_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]));
 
-
     pp_spectrum_inc[ibin] = (TH1D*)f_ref_pp_spectra->Get((TString)("all_jets_corrpT_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]+"_Pt100_Pt300"));
     pp_spectrum_inc[ibin]->SetName((TString)("pp_jet_specrum_inc_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]));
 
@@ -357,8 +353,8 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
   
 
  
-    for(int evi = 0; evi < n_evt; evi++) {
-
+    for(int evi = 0; evi < n_evt; evi++) {  //MZ the event loop
+	cout << "This is event Loop = " << evi << " out of: " << n_evt << endl; 
       my_primary->fChain->GetEntry(evi);
 
       if (evi%1000==0) std::cout << " I am running on file " << fi+1 << " of " << ((int) file_names.size()) << ", evi: " << evi << " of " << n_evt << std::endl;
@@ -366,7 +362,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
       Int_t hiBin = my_primary->hiBin;
       
-      my_hists->NEvents->Fill(hiBin/2.0); // Why do we save the centrality as NEvents? 
+      my_hists->NEvents->Fill(hiBin/2.0); // Why do we save the centrality as NEvents? Answer-> it is a good way count by call this histo and filling it 
       
       vz  = my_primary->vz->at(0);
       wvz=1;
@@ -407,7 +403,9 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
       int highest_idx=-1 ;
     
       //search for leading jet
+cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_primary->jtpt->size() << endl;
       for(int j4i = 0; j4i < (int) my_primary->jtpt->size() ; j4i++) {
+
 	double jet_pt= my_primary->jtpt->at(j4i);
 	if(TMath::Abs(my_primary->jteta->at(j4i))>=searchetacut) continue ;
 	if(jet_pt<=leadingjetcut) continue ;
@@ -416,8 +414,9 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	  highest_idx=j4i;
 	}
       } //search for leading jet loop
-    
-      //search for subleading jet
+   cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << endl;
+      //search for subleading jet with pT < 50 GeV
+
       for(int ijet = 0 ; ijet < (int) my_primary->jtpt->size(); ijet++){
 	if(ijet==highest_idx) continue ;
 	if(TMath::Abs(my_primary->jteta->at(ijet))>= searchetacut) continue ;
@@ -427,6 +426,9 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	  second_highest_idx=ijet;
 	}
       }  //end of subleading jet search
+
+
+   cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << " Subleading index = " << second_highest_idx << " pT = " << sublead_pt << endl;
 
       if(highest_idx< 0 || second_highest_idx< 0 ){   //only apply dijet cuts to dijets
 	highest_idx = -1;
@@ -440,11 +442,15 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	if(dphi<0){dphi = -dphi;}
 	if(dphi>TMath::Pi()) { dphi = 2*TMath::Pi() - dphi; }
 
+	cout << "we have a jet pair." << endl;
+	cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << " Subleading index = " << second_highest_idx << " pT = " << sublead_pt << endl;
+	cout << "Phi between the jets = " << dphi << endl;  
+   
 
-	if((my_primary->jtpt->at(highest_idx)<= leadingjetcut )||
+	if((my_primary->jtpt->at(highest_idx)<= leadingjetcut )|| // these dijets need to be within the right pT range and in the right order
 	   (my_primary->jtpt->at(highest_idx)>= pTmaxcut ) ||
 	   (my_primary->jtpt->at(highest_idx)<= pTmincut ) ||
-	   ( my_primary->jtpt->at(second_highest_idx)<= subleadingjetcut) ||
+	   (my_primary->jtpt->at(second_highest_idx)<= subleadingjetcut) ||
 	   (TMath::Abs(my_primary->jteta->at(highest_idx)) >= etacut ) ||
 	   (TMath::Abs(my_primary->jteta->at(second_highest_idx)) >= etacut )||
 	   (TMath::Abs(dphi)<= dphicut)){
@@ -452,8 +458,14 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	  second_highest_idx = -1; 
 	}
       }
-     
-   
+	if(highest_idx > -1 && second_highest_idx > -1){
+	cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << endl;    
+	cout << "we have a good jet pair." << endl;
+	cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << " Subleading index = " << second_highest_idx << " pT = " << sublead_pt << endl;
+	cout << "Phi between the jets = " << dphi << endl; 
+	cout << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" << endl;
+ 	}
+	// Event loop is still on   
       //----------------------------------------------------------------------------
       // Have dijet information.  Time to start filling bins.
       //----------------------------------------------------------------------------
@@ -463,22 +475,31 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
       for (int ibin=0;ibin<nCBins; ibin ++){
 	if (!is_pp && (my_primary->hiBin<CBins[ibin] || my_primary->hiBin >= CBins[ibin+1])){ continue; }
+	//MZ added
+	//Aj = -1; // to make sure nothing is fishy
+	//
 
 	
 	if(highest_idx > -1 && second_highest_idx > -1){ 
 	  my_hists->NEvents_dijets->Fill(hiBin/2.0);   //MZ Selecting events with 2 RECOjets central, back to back
 	  my_hists->dPhi_hist[ibin]->Fill(fabs(dphi));
 	   Aj = (my_primary->jtpt->at(highest_idx) - my_primary->jtpt->at(second_highest_idx))/(my_primary->jtpt->at(highest_idx) + my_primary->jtpt->at(second_highest_idx));
+	 cout << "In event Loop = " << evi << " Aj = " << Aj << endl;
 	//MZ Addeed
-	if(Aj < 0.22 || Aj > 0.33)
-	continue;
+	if ( Aj > 0.22 )
+
+	//continue;
 	  my_hists->Aj[ibin]->Fill(Aj); 
 	}
       }
       	//MZ S
 	// Now we have the indices of the two hardest jets in a di-jet event, we only keep events with Aj within a limit
-	if(Aj < 0.22 || Aj > 0.33  )
-	continue;    //I hope this will leave out of the event loop
+        if ( Aj > 0.22 )      
+	//if ( Aj < 0.22 )      
+	//continue;    //This will leave out of the event loop
+	cout << "Aj = " << Aj << endl;
+	if (Aj < 0)
+		cout << "OMG Aj Less than zero" << endl;
 	//MZ E
 
 
@@ -488,15 +509,16 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	is_inclusive = kFALSE;
 	if( fabs(my_primary->jteta->at(j4i)) > etacut ) continue;  // Finding Central Jets
 	if(( my_primary->jtpt->at(j4i) > pTmincut ) && (my_primary->trackMax->at(j4i) / my_primary->jtpt->at(j4i) > 0.01)) //if we find a pT > 120, good quality jet
-	{ is_inclusive = kTRUE;  foundjet = kTRUE;} 
-	if( my_primary->jtpt->at(j4i) > pTmaxcut ) continue;             //jetpT < 300
+	{ is_inclusive = kTRUE;  foundjet = kTRUE;}  //if we have one central jet at least, then the event is inclusive 
+	if( my_primary->jtpt->at(j4i) > pTmaxcut ) 
+		continue;             //jetpT < 300
 	
 
 	ibin2 = 0;  ibin3=0;
         
 	for(int pti = 0; pti < nPtBins; pti++) {
 	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  
-		ibin2 = pti ;  //making sure the jet is between 100 and 300 (why?)
+		ibin2 = pti ;  //making sure the jet is between 100 and 300 
 	}
 
 	for (int ibin=0; ibin < nCBins; ibin ++){
@@ -551,14 +573,14 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	    }
 	  }
 	  //-----------------------------------
-       
+       // for(j4i) is still on
         
 	  if(!is_pp) {cent = my_primary->hiBin; }
 
 	  for(int tracks =0; tracks < (int) my_primary->trkPt->size(); tracks++){
 	    if (fabs(my_primary->trkEta->at(tracks)) >= trketamaxcut) continue;
 	    if (my_primary->highPurity->at(tracks) != 1) continue;
-	    if (my_primary->trkPt->at(tracks) <= trkPtCut) continue;  //imposed through parameter
+	    if (my_primary->trkPt->at(tracks) <= trkPtCut) continue;  //imposed through parameters passed to the executable
 
 	  
 	    for(int trkpti = 0; trkpti < nTrkPtBins; trkpti++) {
@@ -610,8 +632,8 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	    my_hists->TrkPhi_weighted[ibin][ibin2][ibin3]->Fill(my_primary->trkPhi->at(tracks),trkweight*wvz*wcen);
 
 
-
 	    if(is_inclusive == kTRUE){
+//		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.11) {      //mz to make sure we select a dijet event
 	   
 	      deta = my_primary->jteta->at(j4i) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(j4i) - my_primary->trkPhi->at(tracks);
@@ -621,11 +643,13 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	    
 	      my_hists->hJetTrackSignalBackground[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 	      my_hists->hJetTrackSignalBackground_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
-	    
+//	    } 
 	    }
 	  
 
 	    if(j4i==highest_idx){
+		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
+		if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
 	      deta = my_primary->jteta->at(highest_idx) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(highest_idx) - my_primary->trkPhi->at(tracks);
 	      while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -633,11 +657,12 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	    
 	      my_hists->hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 	      my_hists->hJetTrackSignalBackgroundLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
-
-
+		}
 	    }
 	  
 	    if(j4i==second_highest_idx){
+		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){		
+		if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){		
 	      deta = my_primary->jteta->at(second_highest_idx) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(second_highest_idx) - my_primary->trkPhi->at(tracks);
 	      while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -646,7 +671,8 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	      my_hists->hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 	      my_hists->hJetTrackSignalBackgroundSubLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 	    }
-	    
+	    }
+
 	    if(is_inclusive && j4i!=highest_idx){
 	      deta = my_primary->jteta->at(j4i) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(j4i) - my_primary->trkPhi->at(tracks);
@@ -759,6 +785,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
 	    
 		if(is_inclusive){
+	//	if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.11) {      //mz to make sure we select a dijet event
 	   	    
 		  deta = my_primary->jteta->at(j4i) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(j4i) - me_tree->trkPhi->at(tracks);
@@ -768,11 +795,13 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 	    
 		  my_hists->hJetTrackME[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 		  my_hists->hJetTrackME_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
-	    
+	  //  	}
 		}
 	  
 
 		if(j4i==highest_idx){
+		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
+		if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
 		  deta = my_primary->jteta->at(highest_idx) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(highest_idx) - me_tree->trkPhi->at(tracks);
 		  while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -781,8 +810,12 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 		  my_hists->hJetTrackMELeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 		  my_hists->hJetTrackMELeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 		}
+		}
 	  
 		if(j4i==second_highest_idx){
+		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
+		if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
+		
 		  deta = my_primary->jteta->at(second_highest_idx) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(second_highest_idx) - me_tree->trkPhi->at(tracks);
 		  while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -791,7 +824,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 		  my_hists->hJetTrackMESubLeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 		  my_hists->hJetTrackMESubLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 		}
-
+		}
  
 		if(is_inclusive && j4i!=highest_idx){
 		  deta = my_primary->jteta->at(j4i) - me_tree->trkEta->at(tracks);
@@ -803,8 +836,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 		  my_hists->hJetTrackMENonLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 		}
 	      
-
-	
+			
 
 	      } /// Track loop for mixed event
 
