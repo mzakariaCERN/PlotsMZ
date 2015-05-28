@@ -21,7 +21,7 @@
 
 using namespace std;
 
-int macro_Plots(int i=0)
+int macro_Plots_AjOver22(int i=0)
 {
 	TFile  *finbg, *fout_inc ;
 
@@ -45,6 +45,7 @@ int macro_Plots(int i=0)
 	int NEtaBins = 0;
 	float PhiBinWidth = 0.0;
 //	int me00bin;
+	float EtaBinWidth = 0.0;
 
 	float PtBins[nPtBins+1] = {100, 300};
 	int NDijets[nCBins] = 0;
@@ -62,6 +63,13 @@ int macro_Plots(int i=0)
 	TString AjBin_str[1] = {"Aj > 0.22"};
 	//TString AjBin_labels[1] = {"Aj < 0.22"};
 	TString AjBin_labels[1] = {"Aj > 0.22"};
+	TString COM_label[1] = {"#sqrt{S_{NN}}=2.76 TeV"};
+	TString CMS_label[1] = {"CMS Preliminary"};
+	TString Pb_label[1] = {"PbPb 169 #mu b^{-1}"};
+	TString eta_label[1] = {"|#eta| < 1.6"};
+	TString pT1_label[1] = {"p_{T,jet}>120 GeV/c"};
+
+
 //MZE
 	float TrkPtBins[nTrkPtBins+1] = {1, 2, 3, 4, 8, 999};
 	TString TrkPtBin_strs[nTrkPtBins+1] = {"TrkPt1", "TrkPt2", "TrkPt3", "TrkPt4", "TrkPt8", "TrkPt999" };
@@ -70,10 +78,8 @@ int macro_Plots(int i=0)
 	float JetLabel[2] = {1, 2};
 	//TString JetLabel_str[2] = {"Leading Jet","Leading Jet"};
 	//TString JetLabel_str[2] = {"Sub-Leading","Sub-Leading"};
-	TString JetLabel_str[2] = {"Leading","Leading"};
-	//TString JetLabel_labels[2] = {"Leading Jet","Leading Jet"};
-	//TString JetLabel_labels[2] = {"Sub-Leading","Sub-Leading"};
-	TString JetLabel_labels[2] = {"Leading","Leading"};
+	TString JetLabel_labels[2] = {"Leading Jet","Leading Jet"};
+//	TString JetLabel_labels[2] = {"Sub-Leading","Sub-Leading"};
 
 
 //	TCanvas *c1 = new TCanvas("c1", "C1_SignalOverME", 0, 0, 1500, 1500);	
@@ -97,6 +103,10 @@ int macro_Plots(int i=0)
 	TCanvas *cc7 = new TCanvas("cc7", "CC7_EtaBandSymmetry", 0, 0, 1500, 1500);	
 	TCanvas *cc8 = new TCanvas("cc8", "CC8_EtaBandSymmetry_HT", 0, 0, 1500, 1500);	
 	TCanvas *cc9 = new TCanvas("cc9", "CC9_EtaBandSymmetry_HT", 0, 0, 1500, 1500);	
+	TCanvas *cc10 = new TCanvas("cc10", "CC10_EtaBandSymmetry_HT", 0, 0, 1500, 1500);	
+	TCanvas *cc11 = new TCanvas("cc11", "CC11_EtaBandSymmetry_HT", 0, 0, 1500, 1500);	
+	TCanvas *cc12 = new TCanvas("cc12", "CC12_EtaBandSymmetry_HT", 0, 0, 1500, 1500);	
+	TCanvas *cc13 = new TCanvas("cc13", "CC13_EtaBandSymmetry_HT", 0, 0, 1500, 1500);	
 	
 	
 //	c1->Divide(4,4,0.0,0.0);
@@ -114,6 +124,11 @@ int macro_Plots(int i=0)
 	cc7->Divide(4,4,0.0001,0.0001);
 	cc8->Divide(4,4,0.0001,0.0001);
 	cc9->Divide(4,4,0.0001,0.0001);
+	cc10->Divide(4,4,0.0001,0.0001);
+	cc11->Divide(4,4,0.0001,0.0001);
+	cc12->Divide(4,4,0.0001,0.0001);
+	cc13->Divide(4,4,0.0001,0.0001);
+
 
 	
 
@@ -209,7 +224,7 @@ sprintf(histname, "h_x_%d",xx);
 
 				hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMELeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 				
-				hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMELeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+				hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMESubLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 	
 			        Correlation[ibin][ibin2][ibin3] = (TH2D*)  fin->Get((TString) (desc + "_hJetTrackSignalBackgroundLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Yield_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 
@@ -303,6 +318,8 @@ sprintf(histname, "h_x_%d",xx);
    				//cc1->SetBottomMargin(0.001);
 				//cc1->Modified();
 				me_projeta[ibin][ibin2][ibin3]->Draw() ;
+				NEtaBins =  me_projeta[ibin][ibin2][ibin3]->GetNbinsX() ;
+				
 				me_projeta[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("Delta eta");
 				NEtaBins =  me_projeta[ibin][ibin2][ibin3]->GetNbinsX() ;
 				me_projeta[ibin][ibin2][ibin3] -> Fit("pol0","","",-.2,.2);
@@ -380,8 +397,7 @@ sprintf(histname, "h_x_%d",xx);
 //##//				cout << "Eta Flat Fitting Parameter value = " << me00[ibin][ibin2][ibin3] << endl;
 				//me_projeta[ibin][ibin2][ibin3] -> Fit("pol0","0","",-.2,.2);
 				//me00[ibin][ibin2][ibin3] = me_projeta[ibin][ibin2][ibin3]->GetFunction("pol0")->GetParameter(0);	
-				//me_projeta[ibin][ibin2][ibin3]->Scale (100./me00[ibin][ibin2][ibin3]);
-				me_projeta[ibin][ibin2][ibin3]->Scale (0.100./me00[ibin][ibin2][ibin3]);
+				me_projeta[ibin][ibin2][ibin3]->Scale (100./me00[ibin][ibin2][ibin3]);
 //##//				//hJetTrackME[ibin][ibin2][ibin3]->Scale (100./me00);
 //##//				hJetTrackMELeading[ibin][ibin2][ibin3]->Scale (NEtaBins /me00[ibin][ibin2][ibin3]);
 //##//				//cout<< "me00 = " << me00 <<endl;
@@ -511,7 +527,7 @@ sprintf(histname, "h_x_%d",xx);
 
 			cc5->cd(4*(ibin3+1)-ibin);
 		
-					hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMELeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+					hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMESubLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 			
 
 				hJetTrackMELeading[ibin][ibin2][ibin3]->Scale(1.0 / (3.0 *  Aj[ibin]->GetEntries() * PhiBinWidth));
@@ -543,18 +559,9 @@ sprintf(histname, "h_x_%d",xx);
 		cc5->SaveAs("cc5_ME.png");
 
 		cc6->cd(4*(ibin3+1)-ibin);
-		
-			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3] = (TH2D*)fin->Get((TString)(desc + "_hJetTrackSignalBackgroundSubLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Yield_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
-
-	
-			hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMELeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
-
-
-
 			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Divide(hJetTrackMELeading[ibin][ibin2][ibin3]);
 			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
-			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");
-			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->SetAxisRange(-3, 3,"X");	
+			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
 			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Draw("LEGO2");	
 
 				{
@@ -683,15 +690,51 @@ sprintf(histname, "h_x_%d",xx);
 			SignalMinusRL[ibin][ibin2][ibin3] = (TH1D*)Signal[ibin][ibin2][ibin3]->Clone((TString)("signal_MinusRL"+CBin_strs[ibin]+"_"+TrkPtBin_strs[ibin3]));
 			SignalMinusRL[ibin][ibin2][ibin3]->Add(	PhiProj_R[ibin][ibin2][ibin3], -1);
 			SignalMinusRL[ibin][ibin2][ibin3]->SetAxisRange(-1.5, 1.5,"X");
-			SignalMinusRL[ibin][ibin2][ibin3]->Scale(1.0/(Aj[ibin]->GetEntries()));
+			SignalMinusRL[ibin][ibin2][ibin3]->Scale(1/(Aj[ibin]->GetEntries()));
 	
+			SignalMinusRL[ibin][ibin2][ibin3]->Draw();
+				
+	//		{
+	//				TLatex *centtex = new TLatex(0.15,0.85,CBin_labels[ibin]);
+	//				centtex->SetNDC();
+	//				centtex->Draw();
+	//				TLatex *pttex = new TLatex(0.15,0.8,TrkPtBin_labels[ibin3]);
+	//				pttex->SetNDC();
+	//				pttex->Draw();
+	//				TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
+	//				Ajtex->SetNDC();
+	//				Ajtex->Draw();
+	//				TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
+	//				Jettex->SetNDC();
+	//				Jettex->Draw();
+
+	//			}
+			cc9->SaveAs("cc9_resultOnPhi.png");
+
+				cc10->cd(4*(ibin3+1)-ibin);
+			SignalMinusRL[ibin][ibin2][ibin3] = (TH1D*)Signal[ibin][ibin2][ibin3]->Clone((TString)("signal_MinusRL"+CBin_strs[ibin]+"_"+TrkPtBin_strs[ibin3]));
+			SignalMinusRL[ibin][ibin2][ibin3]->Add(	PhiProj_R[ibin][ibin2][ibin3], -1);
+			SignalMinusRL[ibin][ibin2][ibin3]->SetAxisRange(-1.5, 1.5,"X");
+			SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("1/N_{jet} dN/(d#Delta#phi dp_{T})");
+		//	SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
+			SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
+			SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(0.6);
+			
+		//	SignalMinusRL[ibin][ibin2][ibin3]->Scale(1/(3.0 *  Aj[ibin]->GetEntries() * PhiBinWidth));
+
+		//	if(ibin3==0)	SignalMinusRL[ibin][ibin2][ibin3]->SetMinimum(-2.);
+		//	if(ibin3==0)	SignalMinusRL[ibin][ibin2][ibin3]->SetMaximum(8.);
+
+
+			SignalMinusRL[ibin][ibin2][ibin3]->SetMarkerStyle(20);
+			SignalMinusRL[ibin][ibin2][ibin3]->SetMarkerColor(kBlue);
 			SignalMinusRL[ibin][ibin2][ibin3]->Draw();
 				
 			{
 					TLatex *centtex = new TLatex(0.15,0.85,CBin_labels[ibin]);
 					centtex->SetNDC();
 					centtex->Draw();
-					TLatex *pttex = new TLatex(0.15,0.8,TrkPtBin_labels[ibin3]);
+					TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
 					TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
@@ -700,9 +743,390 @@ sprintf(histname, "h_x_%d",xx);
 					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
+					TLatex *COMtex = new TLatex(0.15, 0.93, COM_label[0]);
+					COMtex->SetNDC();
+				//	if(ibin == 3)
+					COMtex->Draw();
+					TLatex *CMStex = new TLatex(0.15, 0.70, CMS_label[0]);
+					CMStex->SetNDC();
+				//	if(ibin == 2)
+					CMStex->Draw();
+					TLatex *Pbtex = new TLatex(0.65, 0.93, Pb_label[0]);
+					Pbtex->SetNDC();
+					Pbtex->Draw();
 
 				}
-			cc9->SaveAs("cc9_resultOnPhi.png");	
+			cc10->SaveAs("cc10_resultOnPhi_Leading_Under22.png");
+
+
+      		cc11->cd(4*(ibin3+1)-ibin);
+      		SignalMinusRL[ibin][ibin2][ibin3] = (TH1D*)Signal[ibin][ibin2][ibin3]->Clone((TString)("signal_MinusRL"+CBin_strs[ibin]+"_"+TrkPtBin_strs[ibin3]));
+      	SignalMinusRL[ibin][ibin2][ibin3]->Add(	PhiProj_R[ibin][ibin2][ibin3], -1);
+      	SignalMinusRL[ibin][ibin2][ibin3]->SetAxisRange(-1.5, 1.5,"X");
+      	SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("1/N_{jet} dN/(d#Delta#phi dp_{T})");
+      //	SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
+      	SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
+      	SignalMinusRL[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(0.6);
+      	
+      //	SignalMinusRL[ibin][ibin2][ibin3]->Scale(1/(3.0 *  Aj[ibin]->GetEntries() * PhiBinWidth));
+
+      //	if(ibin3==0)	SignalMinusRL[ibin][ibin2][ibin3]->SetMinimum(-2.);
+      //	if(ibin3==0)	SignalMinusRL[ibin][ibin2][ibin3]->SetMaximum(8.);
+
+
+      	SignalMinusRL[ibin][ibin2][ibin3]->SetMarkerStyle(20);
+      	SignalMinusRL[ibin][ibin2][ibin3]->SetMarkerColor(kBlue);
+      	SignalMinusRL[ibin][ibin2][ibin3]->Draw();
+      		
+      	//{
+      	//		TLatex *centtex = new TLatex(0.15,0.85,CBin_labels[ibin]);
+      	//		if(ibin != 3)
+      	//		{
+      	//		TLatex *centtex = new TLatex(0.05,0.85,CBin_labels[ibin]);
+      	//		}
+      	//		centtex->SetNDC();
+      	//		centtex->Draw();
+      	//		TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
+      	//		if(ibin !=3)
+      	//		{
+      	//		TLatex *pttex = new TLatex(0.05,0.78,TrkPtBin_labels[ibin3]);
+      	//		}
+      	//		pttex->SetNDC();
+      	//		pttex->Draw();
+      	//		TLatex *Ajtex = new TLatex(0.85,0.85,AjBin_labels[0]);
+      	//		Ajtex->SetNDC();
+      	//		Ajtex->Draw();
+      	//		TLatex *Jettex = new TLatex(0.80, 0.80, JetLabel_labels[0]);
+      	//		Jettex->SetNDC();
+      	//		Jettex->Draw();
+      	//		TLatex *COMtex = new TLatex(0.15, 0.93, COM_label[0]);
+      	//		COMtex->SetNDC();
+      	//	if(ibin == 3)
+      	//		COMtex->Draw();
+      	//		TLatex *CMStex = new TLatex(0.05, 0.92, CMS_label[0]);
+      	//		CMStex->SetNDC();
+      	//	if(ibin == 2)
+      	//		CMStex->Draw();
+      	//		TLatex *Pbtex = new TLatex(0.75, 0.93, Pb_label[0]);
+      	//		Pbtex->SetNDC();
+      	//	if(ibin == 3)
+      	//		Pbtex->Draw();
+      	//		TLatex *etatex = new TLatex(0.85, 0.91, eta_label[0]);
+      	//		etatex->SetNDC();
+      	//	if(ibin == 2)
+      	//		etatex->Draw();
+      	//		
+      	//		TLatex *pt1tex = new TLatex(0.75, 0.9, pT1_label[0]);
+      	//		pt1tex->SetNDC();
+      	//	if(ibin == 1)
+      	//		pt1tex->Draw();
+      	//	}
+
+		cc11->SaveAs("cc11_resultOnPhi_Leading_Over22.png");	
+				
+				cc12->cd(4*(ibin3+1)-ibin);
+	
+			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
+			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
+			//hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Draw("LEGO2");   //testing that this is the S/ME from cc6
+
+		//	yield_inc[ibin][ibin2][ibin3] =  (TH2D*) hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Clone((TString)("Yield_"+datalabel+"_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]+ "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_"+TrkPtBin_strs[ibin3+1]));	
+
+			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3] = (TH2D*)fin->Get((TString)(desc + "_hJetTrackSignalBackgroundLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Yield_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+
+			
+			hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMELeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+
+			hJetTrackMELeading[ibin][ibin2][ibin3]->Scale(100./me00[ibin][ibin2][ibin3]);	
+			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Scale(1.0 / ( Aj[ibin]->GetEntries() * PhiBinWidth*EtaBinWidth));	
+			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Divide(hJetTrackMELeading[ibin][ibin2][ibin3]);
+
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis() -> CenterTitle();
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis() -> CenterTitle();
+				//hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis() -> SetTitleOffset(0.8);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis() -> SetTitleOffset(0.8);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()-> SetTitleSize(0.06);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()-> SetTitleSize(0.06);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()-> SetLabelSize(0.06);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()-> SetLabelSize(0.05);
+
+
+//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Divide(hJetTrackMELeading[ibin][ibin2][ibin3]);
+			yield_inc_proj[ibin][ibin2][ibin3] = (TH1D*)hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->ProjectionX((Form("ResultEta%d%d%d",ibin,ibin2,ibin3)),1, 50);	
+			//yield_inc_proj[ibin][ibin2][ibin3] = (TH1D*)hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->ProjectionX((Form("ResultEta%d%d%d",ibin,ibin2,ibin3)),1, 25);	
+					yield_inc_proj[ibin][ibin2][ibin3]->Rebin(4);
+					yield_inc_proj[ibin][ibin2][ibin3]->Scale(EtaBinWidth/4.);   //
+						
+					yield_inc_proj[ibin][ibin2][ibin3]->Draw();
+					return 12;
+					yield_inc_proj[ibin][ibin2][ibin3]->Fit("flat_fit","0","",-3.,-1.5);
+					left_level = flat_fit->GetParameter(0);
+					yield_inc_proj[ibin][ibin2][ibin3]->Fit("flat_fit","0","",1.5,3.);
+					right_level =  flat_fit->GetParameter(0);
+					bg_fit[ibin][ibin2][ibin3] = new TF1("bg_fit%d%d%d","[0]+x-x",-3.,3.);
+					double level = (left_level+right_level)/2.;
+					bg_fit[ibin][ibin2][ibin3]->SetParameter(0,(left_level+right_level)/2.);
+					
+					yield_inc_proj[ibin][ibin2][ibin3]->SetAxisRange(-3., 3., "X");
+					yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()->SetRangeUser(-3., 3.);
+					//yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(level- (3* yield_inc_proj[ibin][ibin2][ibin3]->GetRMS());
+					//yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(level- (3* yield_inc_proj[ibin][ibin2][ibin3]->GetRMS()));
+					//yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(level- 1000);
+					//yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(level*1.2);
+					//yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(level + (3* yield_inc_proj[ibin][ibin2][ibin3]->GetRMS() ));
+					//yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(level + 1000);
+					
+					yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");
+					yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0.85 * level );
+					yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(1.15 * level );
+
+	////				if(ibin == 0 && ibin3 == 0)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(195. );					
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(175. );
+	////				}
+
+	////				if(ibin == 0 && ibin3 == 1)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(28. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(23. );	
+	////				}
+
+	////				if(ibin == 0 && ibin3 == 2)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(5. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(3. );	
+	////				}
+	////			
+	////				
+	////				if(ibin == 0 && ibin3 == 3)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(2.0 );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0.5 );	
+	////				}
+
+	////				
+	////				if(ibin == 1 && ibin3 == 0)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(110. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(100. );	
+	////				}
+
+	////				if(ibin == 1 && ibin3 == 1)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(17. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(14. );	
+	////				}
+
+	////				
+	////				if(ibin == 1 && ibin3 == 2)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(3. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(2. );	
+	////				}
+
+	////				
+	////				if(ibin == 1 && ibin3 == 3)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(1.0 );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0.5 );	
+	////				}
+
+
+	////				if(ibin == 2 && ibin3 == 0)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(47. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(42. );	
+	////				}
+
+	////				
+	////				if(ibin == 2 && ibin3 == 1)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(7.5 );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(5.7 );	
+	////				}
+	////				
+	////				
+	////				if(ibin == 2 && ibin3 == 2)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(1.8 );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0.8 );	
+	////				}
+
+	////				
+	////				if(ibin == 2 && ibin3 == 3)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(1. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0. );	
+	////				}
+
+	////				
+	////				if(ibin == 3 && ibin3 == 0)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(15. );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(11. );	
+	////				}
+
+
+	////				if(ibin == 3 && ibin3 == 1)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(3.5 );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0.5 );	
+	////				}
+
+	////				
+	////				if(ibin == 3 && ibin3 == 2)
+	////				{
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(1.5 );
+	////				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0. );	
+	////				}
+
+					
+		//			if(ibin == 3 && ibin3 == 3)
+		//			{
+		//			yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(1. );
+		//			yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(0. );	
+		//			}
+					//if(ibin==0&&ibin3==0)	yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(80.);
+					//if(ibin==1&&ibin3==0)	yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(50.);
+					//if(ibin==2&&ibin3==0)	yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(20.);
+			yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis() -> SetTitleOffset(0.8);
+			yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()-> SetTitleSize(0.06);
+			yield_inc_proj[ibin][ibin2][ibin3]->GetYaxis()-> SetTitleSize(0.06);
+			yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()-> SetLabelSize(0.06);
+			yield_inc_proj[ibin][ibin2][ibin3]->GetYaxis()-> SetLabelSize(0.05);
+
+
+					yield_inc_proj[ibin][ibin2][ibin3]->Draw();
+					bg_fit[ibin][ibin2][ibin3]->Draw("same");
+
+						
+		//		{
+		//			TLatex *centtex = new TLatex(0.15,0.85,CBin_labels[ibin]);
+		//			centtex->SetNDC();
+		//			centtex->Draw();
+		//			TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
+		//			pttex->SetNDC();
+		//			pttex->Draw();
+		//			TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
+		//			Ajtex->SetNDC();
+		//			Ajtex->Draw();
+		//			TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
+		//			Jettex->SetNDC();
+		//			Jettex->Draw();
+		//			TLatex *COMtex = new TLatex(0.15, 0.93, COM_label[0]);
+		//			COMtex->SetNDC();
+		//		//	if(ibin == 3)
+		//			COMtex->Draw();
+		//			TLatex *CMStex = new TLatex(0.15, 0.70, CMS_label[0]);
+		//			CMStex->SetNDC();
+		//		//	if(ibin == 2)
+		//			CMStex->Draw();
+		//			TLatex *Pbtex = new TLatex(0.65, 0.93, Pb_label[0]);
+		//			Pbtex->SetNDC();
+		//			Pbtex->Draw();
+
+		//		}
+
+			cc12->SaveAs("cc12_RightBandLeftBandComparison_mmagnified_Leading_Over22.png");
+			
+	//cc13->cd(4*(ibin3+1)-ibin);
+	//
+	//hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
+	//		hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
+	//		//hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Draw("LEGO2");   //testing that this is the S/ME from cc6
+
+	//	//	yield_inc[ibin][ibin2][ibin3] =  (TH2D*) hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Clone((TString)("Yield_"+datalabel+"_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]+ "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_"+TrkPtBin_strs[ibin3+1]));	
+
+	//		hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3] = (TH2D*)fin->Get((TString)(desc + "_hJetTrackSignalBackgroundLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Yield_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+
+	//		
+	//		hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMELeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+
+	//		hJetTrackMELeading[ibin][ibin2][ibin3]->Scale(100./me00[ibin][ibin2][ibin3]);	
+	//		hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Scale(1.0 / ( Aj[ibin]->GetEntries() * PhiBinWidth*EtaBinWidth));	
+	//		hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Divide(hJetTrackMELeading[ibin][ibin2][ibin3]);
+
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis() -> CenterTitle();
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis() -> CenterTitle();
+	//			//hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis() -> SetTitleOffset(0.8);
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis() -> SetTitleOffset(0.8);
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()-> SetTitleSize(0.06);
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()-> SetTitleSize(0.06);
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()-> SetLabelSize(0.06);
+	//			hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()-> SetLabelSize(0.05);
+
+
+//	//		hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Divide(hJetTrackMELeading[ibin][ibin2][ibin3]);
+	//		yield_inc_proj[ibin][ibin2][ibin3] = (TH1D*)hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->ProjectionX((Form("ResultEta%d%d%d",ibin,ibin2,ibin3)),1, 50);	
+	//		//yield_inc_proj[ibin][ibin2][ibin3] = (TH1D*)hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->ProjectionX((Form("ResultEta%d%d%d",ibin,ibin2,ibin3)),1, 25);	
+	//				yield_inc_proj[ibin][ibin2][ibin3]->Rebin(4);
+	//				yield_inc_proj[ibin][ibin2][ibin3]->Scale(EtaBinWidth/4.);   //
+	//					
+	//				//yield_inc_proj[ibin][ibin2][ibin3]->Draw();
+	//				cout << " ############################# yield RMS = " <<	yield_inc_proj[ibin][ibin2][ibin3]->GetRMS() << endl;
+	//					yield_inc_proj[ibin][ibin2][ibin3]->Fit("flat_fit","0","",-3.,-1.5);
+	//				left_level = flat_fit->GetParameter(0);
+	//				left_level_error = flat_fit->GetParError(0);
+	//				cout << "###############L############# Left Error = " << left_level_error << endl;
+	//						yield_inc_proj[ibin][ibin2][ibin3]->Fit("flat_fit","0","",1.5,3.);
+	//					right_level =  flat_fit->GetParameter(0);
+	//					right_level_error =  flat_fit->GetParError(0);
+
+	//						bg_fit[ibin][ibin2][ibin3] = new TF1("bg_fit%d%d%d","[0]+x-x",-3.,3.);
+	//						double level = (left_level+right_level)/2.;
+	//						 bg_fit[ibin][ibin2][ibin3]->SetParameter(0,(left_level+right_level)/2.);
+	//				yield_inc_proj[ibin][ibin2][ibin3]->SetAxisRange(-3., 3., "X");
+	//				yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()->SetRangeUser(-3., 3.);
+	//				//yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(level- (3* yield_inc_proj[ibin][ibin2][ibin3]->GetRMS());
+	//				//yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(level- (3* yield_inc_proj[ibin][ibin2][ibin3]->GetRMS()));
+	//				//yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(level- 1000);
+	//				//yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(level*1.2);
+	//				//yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(level + (3* yield_inc_proj[ibin][ibin2][ibin3]->GetRMS() ));
+	//				//yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(level + 1000);
+	//				
+	//				yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");
+	//				yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(3*right_level_error + level );
+	//				yield_inc_proj[ibin][ibin2][ibin3]->SetMaximum(-3*right_level_error + level );
+	//				//if(ibin==0&&ibin3==0)	yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(80.);
+	//				//if(ibin==1&&ibin3==0)	yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(50.);
+	//				//if(ibin==2&&ibin3==0)	yield_inc_proj[ibin][ibin2][ibin3]->SetMinimum(20.);
+	//		yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis() -> SetTitleOffset(0.8);
+	//		yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()-> SetTitleSize(0.06);
+	//		yield_inc_proj[ibin][ibin2][ibin3]->GetYaxis()-> SetTitleSize(0.06);
+	//		yield_inc_proj[ibin][ibin2][ibin3]->GetXaxis()-> SetLabelSize(0.06);
+	//		yield_inc_proj[ibin][ibin2][ibin3]->GetYaxis()-> SetLabelSize(0.05);
+
+
+	//				yield_inc_proj[ibin][ibin2][ibin3]->Draw();
+	//				bg_fit[ibin][ibin2][ibin3]->Draw("same");
+	//			//	cout <<  " RMS = " << bg_fit[ibin][ibin2][ibin3]->GetRMS() << endl;
+	//					
+	//			{
+	//				TLatex *centtex = new TLatex(0.15,0.85,CBin_labels[ibin]);
+	//				centtex->SetNDC();
+	//				centtex->Draw();
+	//				TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
+	//				pttex->SetNDC();
+	//				pttex->Draw();
+	//				TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
+	//				Ajtex->SetNDC();
+	//				Ajtex->Draw();
+	//				TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
+	//				Jettex->SetNDC();
+	//				Jettex->Draw();
+
+	//			}
+
+	//			cc13->SaveAs("cc13_RightBandLeftBandComparison_mmagnified_Leading_Under22.png");
+
+///////////////////////
+
+	
 //##///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //##//				//yield_inc[ibin][ibin2][ibin3]->Scale(me00);
 //##//				//me_proj_canvas->Update();
