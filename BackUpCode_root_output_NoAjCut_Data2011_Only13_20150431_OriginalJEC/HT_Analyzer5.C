@@ -1,5 +1,4 @@
 /// reco PbPb
-//	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  
 #include <iostream>
 #include "TFile.h"
 #include "TRandom.h"
@@ -27,8 +26,7 @@ using namespace std;
 #define nTrkPtBins 5
 
 float trkPtCut=1;
-//double Aj = 9999999;
-double Aj = -1;
+
 int parti = -999;
 bool is_data = false;
 
@@ -83,12 +81,15 @@ TProfile *p_fake_rmin_pp[npt_pp];
 TFile *f_secondary;
 TH2D * hsecondary;
 
+
 vector <double> dijet_pt;
 vector <double> dijet_eta;
 vector <double> dijet_phi;
 vector <double> dijet_evi;
 vector <double> dijet_vz;
 vector <double> dijet_cent;
+
+
 
 #include "hist_class_def_HT.h"
 
@@ -104,12 +105,12 @@ void calculate_efficiency(bool is_pp, double cent, double eta, double pt, double
 //*************************************************************
 
 
-int main(int argc, char *argv[]){  
+int main(int argc, char *argv[]){
  
-  assert(argc == 4);    //This code needs 3 parameters
+  assert(argc == 4);
   dataset_type_code = atoi(argv[1]);    //// pick datasets you want to run over
   
-  trkPtCut = atof(argv[2]);   // MZ defined in mixing.h
+  trkPtCut = atof(argv[2]);
   parti = atoi(argv[3]);
   assert(trkPtCut > 0. && trkPtCut < 5.);
   
@@ -122,7 +123,7 @@ int main(int argc, char *argv[]){
   else if( dataset_type_code == e_HydJet30 || dataset_type_code == e_HydJet50 || dataset_type_code == e_HydJet80|| dataset_type_code == e_HydJet100|| dataset_type_code == e_HydJet120|| dataset_type_code == e_HydJet170|| dataset_type_code == e_HydJet200 || dataset_type_code == e_HydJet250 || dataset_type_code == e_HydJet300) is_data =false;
   else assert(0);
 
-  assert(is_data);   // MZ making sure we are running on data
+  assert(is_data);
   
   std::vector<TString> files_of_file_names;   files_of_file_names.clear();
   std::vector<float> Xsections;   Xsections.clear();
@@ -196,8 +197,8 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
   //****************************************
 
 
-  double cent, eta, pt, phi, rmin, r_reco, jeteta, jetphi, fake, eff, secondary, trkweight,vz, wvz, wcen, deta, dphi;
-  bool foundjet = kFALSE, is_inclusive = kFALSE;  //initialized them just in case
+  double cent, eta, pt, phi, rmin, r_reco, jeteta, jetphi, fake, eff, secondary, trkweight,vz, wvz, wcen, deta, dphi, dphiNoCut;
+  bool foundjet, is_inclusive;
 
 
   //----------------------------------------------------------------
@@ -280,6 +281,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
     pbpb_spectrum_sub[ibin] = (TH1D*)f_ref_pbpb_spectra->Get((TString)("all_jets_corrpT_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]+"_Pt100_Pt300"));
     pbpb_spectrum_sub[ibin]->SetName((TString)("PbPb_jet_specrum_sub_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]));
 
+
     pp_spectrum_inc[ibin] = (TH1D*)f_ref_pp_spectra->Get((TString)("all_jets_corrpT_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]+"_Pt100_Pt300"));
     pp_spectrum_inc[ibin]->SetName((TString)("pp_jet_specrum_inc_"+CBin_strs[ibin]+"_"+CBin_strs[ibin+1]));
 
@@ -353,8 +355,8 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
   
 
  
-    for(int evi = 0; evi < n_evt; evi++) {  //MZ the event loop
-	cout << "This is event Loop = " << evi << " out of: " << n_evt << endl; 
+    for(int evi = 0; evi < n_evt; evi++) {
+
       my_primary->fChain->GetEntry(evi);
 
       if (evi%1000==0) std::cout << " I am running on file " << fi+1 << " of " << ((int) file_names.size()) << ", evi: " << evi << " of " << n_evt << std::endl;
@@ -362,14 +364,13 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
 
       Int_t hiBin = my_primary->hiBin;
       
-      my_hists->NEvents->Fill(hiBin/2.0); // Why do we save the centrality as NEvents? Answer-> it is a good way count by call this histo and filling it 
+      my_hists->NEvents->Fill(hiBin/2.0);
       
       vz  = my_primary->vz->at(0);
       wvz=1;
       wcen=1;
       
-      int ibin2 = 0;  int ibin3=0;  //ibin2 is used to loop over the leading jet
-	int ibin4 = 0;  //ibin4 is used to set Aj (if needed)
+      int ibin2 = 0;  int ibin3=0;
 
       if(is_data) {
 	int noise_event_selection = my_primary->pHBHENoiseFilter;
@@ -403,9 +404,7 @@ void StudyFiles(std::vector<TString> file_names, int foi, hist_class *my_hists, 
       int highest_idx=-1 ;
     
       //search for leading jet
-cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_primary->jtpt->size() << endl;
       for(int j4i = 0; j4i < (int) my_primary->jtpt->size() ; j4i++) {
-
 	double jet_pt= my_primary->jtpt->at(j4i);
 	if(TMath::Abs(my_primary->jteta->at(j4i))>=searchetacut) continue ;
 	if(jet_pt<=leadingjetcut) continue ;
@@ -414,9 +413,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	  highest_idx=j4i;
 	}
       } //search for leading jet loop
-   cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << endl;
-      //search for subleading jet with pT < 50 GeV
-
+    
+      //search for subleading jet
       for(int ijet = 0 ; ijet < (int) my_primary->jtpt->size(); ijet++){
 	if(ijet==highest_idx) continue ;
 	if(TMath::Abs(my_primary->jteta->at(ijet))>= searchetacut) continue ;
@@ -427,9 +425,6 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	}
       }  //end of subleading jet search
 
-
-   cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << " Subleading index = " << second_highest_idx << " pT = " << sublead_pt << endl;
-
       if(highest_idx< 0 || second_highest_idx< 0 ){   //only apply dijet cuts to dijets
 	highest_idx = -1;
 	second_highest_idx = -1;
@@ -439,107 +434,78 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	
 	//	dphi =TMath::Abs( (my_primary->jtphi->at(highest_idx))-(my_primary->jtphi->at(second_highest_idx)));
 	dphi =  my_primary->jtphi->at(highest_idx) - my_primary->jtphi->at(second_highest_idx);
+//	  my_hists->dPhiNoCut_hist[ibin]->Fill(fabs(dphi)); //MZ added to get all values of dPhi for jets not restricted
 	if(dphi<0){dphi = -dphi;}
 	if(dphi>TMath::Pi()) { dphi = 2*TMath::Pi() - dphi; }
 
-	cout << "we have a jet pair." << endl;
-	cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << " Subleading index = " << second_highest_idx << " pT = " << sublead_pt << endl;
-	cout << "Phi between the jets = " << dphi << endl;  
-   
+dphiNoCut = dphi; // MZ to save a copy of the dphi before applying the cut
 
-	if((my_primary->jtpt->at(highest_idx)<= leadingjetcut )|| // these dijets need to be within the right pT range and in the right order
+	if((my_primary->jtpt->at(highest_idx)<= leadingjetcut )||
 	   (my_primary->jtpt->at(highest_idx)>= pTmaxcut ) ||
 	   (my_primary->jtpt->at(highest_idx)<= pTmincut ) ||
-	   (my_primary->jtpt->at(second_highest_idx)<= subleadingjetcut) ||
+	   ( my_primary->jtpt->at(second_highest_idx)<= subleadingjetcut) ||
 	   (TMath::Abs(my_primary->jteta->at(highest_idx)) >= etacut ) ||
-	   (TMath::Abs(my_primary->jteta->at(second_highest_idx)) >= etacut )||
-	   (TMath::Abs(dphi)<= dphicut)){
+	   (TMath::Abs(my_primary->jteta->at(second_highest_idx)) >= etacut ) ||	   (TMath::Abs(dphi)<= dphicut)  ) //MZ removed temp to check Dphi dist
+        {
 	  highest_idx = -1;  
 	  second_highest_idx = -1; 
 	}
       }
-	if(highest_idx > -1 && second_highest_idx > -1){
-	cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << endl;    
-	cout << "we have a good jet pair." << endl;
-	cout << "In event Loop = " << evi << " The leading jet index: " << highest_idx << " with pT = " << lead_pt << " Subleading index = " << second_highest_idx << " pT = " << sublead_pt << endl;
-	cout << "Phi between the jets = " << dphi << endl; 
-	cout << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" << endl;
- 	}
-	// Event loop is still on   
+     
+   
       //----------------------------------------------------------------------------
       // Have dijet information.  Time to start filling bins.
       //----------------------------------------------------------------------------
 
-
       //Loop over cent bins, but we pick only the right one to fill for PbPb.  We fill all cent bins (properly weighted each time) for pp.
 
       for (int ibin=0;ibin<nCBins; ibin ++){
-	if (!is_pp && (my_primary->hiBin<CBins[ibin] || my_primary->hiBin >= CBins[ibin+1])){ continue; }
-	//MZ added
-	//Aj = -1; // to make sure nothing is fishy
-	//
+	if (!is_pp&&(my_primary->hiBin<CBins[ibin] || my_primary->hiBin >=CBins[ibin+1])){ continue; }
 
 	
 	if(highest_idx > -1 && second_highest_idx > -1){ 
-	  my_hists->NEvents_dijets->Fill(hiBin/2.0);   //MZ Selecting events with 2 RECOjets central, back to back
+	  my_hists->NEvents_dijets->Fill(hiBin/2.0);
 	  my_hists->dPhi_hist[ibin]->Fill(fabs(dphi));
-	   Aj = (my_primary->jtpt->at(highest_idx) - my_primary->jtpt->at(second_highest_idx))/(my_primary->jtpt->at(highest_idx) + my_primary->jtpt->at(second_highest_idx));
-	 cout << "In event Loop = " << evi << " Aj = " << Aj << endl;
-	//MZ Addeed
-	if ( Aj < 0.22 )
+	  double Aj = (my_primary->jtpt->at(highest_idx) - my_primary->jtpt->at(second_highest_idx))/(my_primary->jtpt->at(highest_idx) + my_primary->jtpt->at(second_highest_idx));
+	  my_hists->Aj[ibin]->Fill(Aj);
+           my_hists->Aj_dPhi[ibin]->Fill(fabs(dphi),Aj);
 
-	//continue;
-	  my_hists->Aj[ibin]->Fill(Aj); 
 	}
       }
-      	//MZ S
-	// Now we have the indices of the two hardest jets in a di-jet event, we only keep events with Aj within a limit
-        if ( Aj > 0.22 )      
-	//if ( Aj < 0.22 )      
-	continue;    //This will leave out of the event loop
-	cout << "Aj = " << Aj << endl;
-	if (Aj < 0)
-		cout << "OMG Aj Less than zero" << endl;
-	//MZ E
-
-
+      
       for(int j4i = 0; j4i < (int) my_primary->jtpt->size(); j4i++) {
 
 	foundjet = kFALSE;
 	is_inclusive = kFALSE;
-	if( fabs(my_primary->jteta->at(j4i)) > etacut ) continue;  // Finding Central Jets
-	if(( my_primary->jtpt->at(j4i) > pTmincut ) && (my_primary->trackMax->at(j4i) / my_primary->jtpt->at(j4i) > 0.01)) //if we find a pT > 120, good quality jet
-	{ is_inclusive = kTRUE;  foundjet = kTRUE;}  //if we have one central jet at least, then the event is inclusive 
-	if( my_primary->jtpt->at(j4i) > pTmaxcut ) 
-		continue;             //jetpT < 300
+	if( fabs(my_primary->jteta->at(j4i)) > etacut ) continue;
+	if(( my_primary->jtpt->at(j4i) > pTmincut )&&(my_primary->trackMax->at(j4i)/my_primary->jtpt->at(j4i) > 0.01)){ is_inclusive = kTRUE;  foundjet = kTRUE;} 
+	if( my_primary->jtpt->at(j4i) > pTmaxcut ) continue;
 	
 
 	ibin2 = 0;  ibin3=0;
         
 	for(int pti = 0; pti < nPtBins; pti++) {
-	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  
-		ibin2 = pti ;  //making sure the jet is between 100 and 300 
+	  if (my_primary->jtpt->at(j4i) >=PtBins[pti] && my_primary->jtpt->at(j4i) < PtBins[pti+1])  ibin2 = pti ;
 	}
 
-	for (int ibin=0; ibin < nCBins; ibin ++){
-	  if (!is_pp && (my_primary->hiBin < CBins[ibin] || my_primary->hiBin >= CBins[ibin+1]) )  //still uses the 0-200 centrality convintion but sets it back in naming 
-	{ continue; }
+	for (int ibin=0;ibin<nCBins; ibin ++){
+	  if (!is_pp&&(my_primary->hiBin<CBins[ibin] || my_primary->hiBin >=CBins[ibin+1])){ continue; }
 
 	
 	  if(is_inclusive == kTRUE){
-	    my_hists->all_jets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i), wvz*wcen);  //supposed to save all jets? there is a leak if we get few pt < 120 then pt > 120 (why?)
+	    my_hists->all_jets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i), wvz*wcen); 
 	    my_hists->all_jets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i), wvz*wcen); 
 	    my_hists->all_jets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i), wvz*wcen); 
 	  }
 
-	  if(is_inclusive == kTRUE && j4i!=highest_idx){
+	  if(is_inclusive == kTRUE &&j4i!=highest_idx){
 	    my_hists->only_nonleadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i), wvz*wcen); 
 	    my_hists->only_nonleadingjets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i), wvz*wcen); 
 	    my_hists->only_nonleadingjets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i), wvz*wcen); 
 	  }
 
 	  if(j4i==highest_idx){
-	    my_hists->only_leadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i));  //these jets are not weighed (though named corrpT) (why?)
+	    my_hists->only_leadingjets_corrpT[ibin][ibin2]->Fill(my_primary->jtpt->at(j4i));
 	    my_hists->only_leadingjets_phi[ibin][ibin2]->Fill(my_primary->jtphi->at(j4i));
 	    my_hists->only_leadingjets_eta[ibin][ibin2]->Fill(my_primary->jteta->at(j4i));
 	    /*
@@ -573,19 +539,18 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	    }
 	  }
 	  //-----------------------------------
-       // for(j4i) is still on
+       
         
 	  if(!is_pp) {cent = my_primary->hiBin; }
 
 	  for(int tracks =0; tracks < (int) my_primary->trkPt->size(); tracks++){
-	    if (fabs(my_primary->trkEta->at(tracks)) >= trketamaxcut) continue;
-	    if (my_primary->highPurity->at(tracks) != 1) continue;
-	    if (my_primary->trkPt->at(tracks) <= trkPtCut) continue;  //imposed through parameters passed to the executable
+	    if(fabs(my_primary->trkEta->at(tracks))>=trketamaxcut) continue;
+	    if (my_primary->highPurity->at(tracks)!=1) continue;
+	    if(my_primary->trkPt->at(tracks)<=trkPtCut) continue;
 
 	  
 	    for(int trkpti = 0; trkpti < nTrkPtBins; trkpti++) {
-	      if (my_primary->trkPt->at(tracks) >= TrkPtBins[trkpti] && my_primary->trkPt->at(tracks) < TrkPtBins[trkpti+1])  
-		ibin3 = trkpti ;   //find which bin this track belongs to
+	      if (my_primary->trkPt->at(tracks) >=TrkPtBins[trkpti] && my_primary->trkPt->at(tracks) < TrkPtBins[trkpti+1])  ibin3 = trkpti ;
 	    } /// trkpti loop
 	  
 
@@ -596,16 +561,14 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	    phi= my_primary->trkPhi->at(tracks);
 	    rmin = 99;
 
-	    for(int ijet=0; ijet<(int) my_primary->jtpt->size(); ijet++){
+	    for(int ijet=0;ijet<(int) my_primary->jtpt->size();ijet++){
 	      jeteta = my_primary->jteta->at(ijet);
 	      jetphi = my_primary->jtphi->at(ijet);
 	    
-	      if(fabs(jeteta) > 2 || my_primary->jtpt->at(ijet) < 50) 
-		continue;
+	      if(fabs(jeteta)>2 || my_primary->jtpt->at(ijet)<50) continue;
 	   
-	      r_reco = sqrt(pow(jeteta-eta,2) + pow(acos(cos(jetphi-phi)),2));
-	      if(r_reco<rmin)
-		rmin = r_reco;
+	      r_reco=sqrt(pow(jeteta-eta,2)+pow(acos(cos(jetphi-phi)),2));
+	      if(r_reco<rmin)rmin=r_reco;
 	    }
 
 	    calculate_efficiency(is_pp, cent, eta, pt, phi, rmin, fake, eff,secondary);
@@ -632,9 +595,10 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	    my_hists->TrkPhi_weighted[ibin][ibin2][ibin3]->Fill(my_primary->trkPhi->at(tracks),trkweight*wvz*wcen);
 
 
+
 	    if(is_inclusive == kTRUE){
-//		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.11) {      //mz to make sure we select a dijet event
 	   
+	    
 	      deta = my_primary->jteta->at(j4i) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(j4i) - my_primary->trkPhi->at(tracks);
 	 
@@ -643,13 +607,11 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	    
 	      my_hists->hJetTrackSignalBackground[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 	      my_hists->hJetTrackSignalBackground_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
-//	    } 
+	    
 	    }
 	  
 
 	    if(j4i==highest_idx){
-		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
-		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
 	      deta = my_primary->jteta->at(highest_idx) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(highest_idx) - my_primary->trkPhi->at(tracks);
 	      while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -657,12 +619,11 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	    
 	      my_hists->hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 	      my_hists->hJetTrackSignalBackgroundLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
-		}
+
+
 	    }
 	  
 	    if(j4i==second_highest_idx){
-		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){		
-		if(highest_idx > -1 && second_highest_idx > -1 && Aj <  0.22){		
 	      deta = my_primary->jteta->at(second_highest_idx) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(second_highest_idx) - my_primary->trkPhi->at(tracks);
 	      while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -671,8 +632,7 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	      my_hists->hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 	      my_hists->hJetTrackSignalBackgroundSubLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 	    }
-	    }
-
+	    
 	    if(is_inclusive && j4i!=highest_idx){
 	      deta = my_primary->jteta->at(j4i) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(j4i) - my_primary->trkPhi->at(tracks);
@@ -699,13 +659,13 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	jet_vzbin = vzbins->FindBin(my_primary->vz->at(0));
 
       
-	if(is_inclusive || j4i == highest_idx || j4i == second_highest_idx){  //only if we've got a trigger according to some criteria  AND we're not pp
+	if(is_inclusive||j4i==highest_idx||j4i==second_highest_idx){  //only if we've got a trigger according to some criteria  AND we're not pp
 
 	  //	  cout << "mixing now " << me <<" "<<nme<<endl;
 
 	  int startovercheck = 0;
 	  int mevi = 0;
-	  while(mevi< meptrig){  // What is meptrig and why is it set to 50 (why?)
+	  while(mevi< meptrig){  //
 	    me++;
 	  
 	    if(me>=nme){
@@ -785,7 +745,6 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 
 	    
 		if(is_inclusive){
-	//	if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.11) {      //mz to make sure we select a dijet event
 	   	    
 		  deta = my_primary->jteta->at(j4i) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(j4i) - me_tree->trkPhi->at(tracks);
@@ -795,13 +754,11 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	    
 		  my_hists->hJetTrackME[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 		  my_hists->hJetTrackME_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
-	  //  	}
+	    
 		}
 	  
 
 		if(j4i==highest_idx){
-		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
-	//	if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
 		  deta = my_primary->jteta->at(highest_idx) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(highest_idx) - me_tree->trkPhi->at(tracks);
 		  while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -810,12 +767,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 		  my_hists->hJetTrackMELeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 		  my_hists->hJetTrackMELeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 		}
-		}
 	  
 		if(j4i==second_highest_idx){
-		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
-		//if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
-		
 		  deta = my_primary->jteta->at(second_highest_idx) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(second_highest_idx) - me_tree->trkPhi->at(tracks);
 		  while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -824,7 +777,7 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 		  my_hists->hJetTrackMESubLeading[ibin][ibin2][ibin3]->Fill(deta,dphi, trkweight*wvz*wcen);
 		  my_hists->hJetTrackMESubLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 		}
-		}
+
  
 		if(is_inclusive && j4i!=highest_idx){
 		  deta = my_primary->jteta->at(j4i) - me_tree->trkEta->at(tracks);
@@ -836,7 +789,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 		  my_hists->hJetTrackMENonLeading_notrkcorr[ibin][ibin2][ibin3]->Fill(deta,dphi, wvz*wcen);
 		}
 	      
-			
+
+	
 
 	      } /// Track loop for mixed event
 
@@ -854,7 +808,7 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
       if(foundjet==kTRUE){my_hists->NEvents_test->Fill(hiBin/2.);}
     
       	  
-    } ///event loop ends for both dijets and inclusive jets
+    } ///event loop for both dijets and inclusive jets
      
   
   }//FILE LOOP
