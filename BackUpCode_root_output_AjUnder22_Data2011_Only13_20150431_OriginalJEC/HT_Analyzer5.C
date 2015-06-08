@@ -486,8 +486,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	   Aj = (my_primary->jtpt->at(highest_idx) - my_primary->jtpt->at(second_highest_idx))/(my_primary->jtpt->at(highest_idx) + my_primary->jtpt->at(second_highest_idx));
 	 cout << "In event Loop = " << evi << " Aj = " << Aj << endl;
 	//MZ Addeed
-	//if ( Aj < 0.22 )
-	if ( Aj > 0.22 )
+	if ( Aj < 0.22 )
+	//if ( Aj > 0.22 )
 
 	//continue;
 	  my_hists->Aj[ibin]->Fill(Aj); 
@@ -495,8 +495,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
       }
       	//MZ S
 	// Now we have the indices of the two hardest jets in a di-jet event, we only keep events with Aj within a limit
-        //if ( Aj > 0.22 )      
-	if ( Aj < 0.22 )      
+        if ( Aj > 0.22 )      
+	//if ( Aj < 0.22 )      
 	continue;    //This will leave out of the event loop
 	cout << "Aj = " << Aj << endl;
 	if (Aj < 0)
@@ -662,8 +662,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	    }
 	  
 	    if(j4i==second_highest_idx){
-		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){		
-		if(highest_idx > -1 && second_highest_idx > -1 && Aj >  0.22){		
+		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){		
+		//if(highest_idx > -1 && second_highest_idx > -1 && Aj >  0.22){		
 	      deta = my_primary->jteta->at(second_highest_idx) - my_primary->trkEta->at(tracks);
 	      dphi = my_primary->jtphi->at(second_highest_idx) - my_primary->trkPhi->at(tracks);
 	      while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -801,8 +801,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 	  
 
 		if(j4i==highest_idx){
-	//	if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
-		if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
+		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
+	//	if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
 		  deta = my_primary->jteta->at(highest_idx) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(highest_idx) - me_tree->trkPhi->at(tracks);
 		  while(dphi>(1.5*TMath::Pi())){dphi+= -2*TMath::Pi();}
@@ -814,8 +814,8 @@ cout << "In event Loop = " << evi << " we have this amouunt of jets: " <<  my_pr
 		}
 	  
 		if(j4i==second_highest_idx){
-		//if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
-		if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
+		if(highest_idx > -1 && second_highest_idx > -1 && Aj < 0.22){
+		//if(highest_idx > -1 && second_highest_idx > -1 && Aj > 0.22){
 		
 		  deta = my_primary->jteta->at(second_highest_idx) - me_tree->trkEta->at(tracks);
 		  dphi = my_primary->jtphi->at(second_highest_idx) - me_tree->trkPhi->at(tracks);
