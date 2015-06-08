@@ -1,38 +1,90 @@
 void macro_Plots()
 {
-TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/Data2011_trkPtCut1_part1.root");
+int NumberDijets = 0;
+double dPhiBinWidth= 0; 
+
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_AJ11.root");
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_AJ11.root");
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_Aj11_20150319.root");
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_Aj11_20150318.root");
+TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_All_AJOver22.root");
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/FromH/PbPb_Leading_Correlations.root");
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_AjUnder22.root");
+//TFile *f = TFile::Open("PbPb_AjBins_Cent0_Cent10_Pt1_Pt2.root");
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/PbPb_AjBins_Cent0_Cent10_Pt1_Pt2.root");
+//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_All_AJ33.root");
 cout << "took the file" << endl;
 
-hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
+//cout << "hists_AjCent50_Cent100->GetEntries() = " << hists_AjCent50_Cent100->GetEntries()  << endl;
+
+//NumberDijets = hists_AjCent0_Cent10->GetEntries() + hists_AjCent10_Cent30->GetEntries() + hists_AjCent30_Cent50->GetEntries() + hists_AjCent50_Cent100->GetEntries();
+NumberDijets = hists_only_leadingjets_corrpTCent0_Cent10_Pt100_Pt300->GetEntries();
+//NumberDijets = only_leadingjets_corrpT_Cent0_Cent10_Pt100_Pt300->GetEntries(); // only when runnin H files
+//cout << "NumberDijets using corrpT= " <<  NumberDijets << endl;
+
+cout << "Number of Dijets = " << NumberDijets << endl;
+hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
+//hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
 cout << "Plot of the Mixed Events" << endl;
 
-hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionX("ProEta")->Draw();
+//hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionX("ProEta")->Draw();
+hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionX("ProEta")->Draw();
 cout << "Eta Projection" <<  endl;
-
-hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ProPhi")->Draw();
+//return 0;
+//hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ProPhi")->Draw();
+hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ProPhi")->Draw();
 cout << "Phi Projection" << endl;
-
+//return 0;
 cout << "Number of Eta bins:" << ProEta->GetNbinsX() << endl;
-float EtaBins = ProEta->GetNbinsX() ;
+float EtaBins = ProEta->GetNbinsX();
+float dEtaBinWidth = ProEta->GetBinWidth(1) ;
 cout << "Number of Phi bins:" << ProPhi->GetNbinsX() << endl;
+dPhiBinWidth =  ProPhi->GetBinWidth(1);
+cout << "dPhi Bin width = " << dPhiBinWidth << endl;
 
+ TAxis *xaxis = ProPhi->GetXaxis();
+
+//	cout << "First bin in Phi = " << binx << endl;
+	cout << "First Bin Content in Phi = " <<   ProPhi->GetBinCenter(1) << endl;
+	cout << "Last Bin Content in Phi = " <<   ProPhi->GetBinCenter(100) << endl;
+  Int_t binx = xaxis->FindBin(0);
+	cout << "Peak at bin = " << binx << endl;
+
+  Int_t binx = xaxis->FindBin(3.14159);
+	cout << "Peak at bin = " << binx << endl;
+	
 cout << "Fitting the central part of eta" << endl;
 ProEta->Fit("pol0","","",-0.2,0.2);
 float s = pol0->GetParameter(0); 
 cout << "The value we need to normalize for is = " << s << endl;
+//cout << "bin(0,0) before = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
+cout << "bin(0,0) before = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
 
 cout << "Normalizing the Mixed Events" << endl;
-hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(EtaBins/s);
+//hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(EtaBins/s);
+////hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(EtaBins/s);
+hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(0.1/s);
+//cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
+cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
 
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
+hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
+//return 0;
 cout << "Cloning Mixed Event to devide by it" << endl;
-TH2D* ME = hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Clone("ME");
+//return 0;
+//TH2D* ME = hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Clone("ME");
+TH2D* ME = hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Clone("ME");
 
 cout << "Divide Signal by ME ...." <<  endl;
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Divide(ME);
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("Lego2");
+hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Divide(ME);
 
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ResultPhi",20, 80)->Draw();
+//cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
+cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
+
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("Lego2");
+hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("Lego2");
+//return 0;
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ResultPhi",50, 25)->Draw();
 
 //So lets remember, we have 100 bins for eta. and the range of eta is |eta| < [-5, 5] (obtained from Proj Y -> it was created as such)
 //so 10 / 100 = .1 (eta/bin) or 10 bins per eta 
@@ -52,16 +104,54 @@ hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Projectio
 // ProEta->GetBinLowEdge(21)                                                  |
 //which gives                                                                 |
 //(const Double_t)(-3.00000000000000000e+00) ---------------------------------|       
+//side and check
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionX("rawEta",1,50)->Draw();
+//return 0;    //OLGA
+hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBL",21,35 )->Draw();
+//return 0;
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBL",0,20 )->Draw(); //just 4 fun (looks like trash)
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY()->Draw();
+ 
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBR",66,80 )->Draw();
+hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBR",66,80 )->Draw("same");
 
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBL",21,35 )->Draw();
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBR",66,80 )->Draw();
 SBL->Add(SBR);
 SBL->Draw();
 
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal",36,65 )->Draw();
-Signal->Add(SBL,-1);
- Signal->Draw();
+//return 0;
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal",36,65 )->Draw();
+//Signal->Add(SBL,-1);
+// Signal->Draw();
+hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionX("Check",1, 50)->Draw();
 
-hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal",36,65 )->Draw();
+//return 0;
+TH1D *Signal = (TH1D*)hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal",36, 65);
+Signal->SetMarkerStyle(20);
+Signal->SetMarkerColor(kRed);
+Signal->Draw();
+//return 0;
+SBL->SetMarkerStyle(20);
+SBL->SetMarkerColor(kBlue);
+SBL->Draw("SAME");
+
+Signal->Rebin(4);
+Signal->SetMarkerColor(kRed);
+Signal->SetMarkerStyle(20);
+Signal->Draw();
+SBL->SetMarkerStyle(20);
+
+SBL->Rebin(4);
+SBL->Draw("SAME");
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2>ProjectionY("Signal",36,65 )->Draw();
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(1.0/(3 *NumberDijets * dPhiBinWidth ));
+/////Signal->Scale(1.0/(3 *NumberDijets * dPhiBinWidth ));
+//hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal",36,65 )->Draw();
+//Signal->Draw();
+
+Signal->Add(SBL,-1);
+Signal->SetAxisRange(-1.5, 1.5,"X");
+Signal->Scale(1.0/(NumberDijets * 3.0 * dPhiBinWidth));
+Signal->Draw();
+
 
                    }                                           
