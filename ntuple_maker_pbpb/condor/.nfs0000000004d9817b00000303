@@ -1,0 +1,69 @@
+#!/bin/sh
+
+counter=1
+
+destination=/mnt/hadoop/cms/store/user/pkurt_mit/pthat80_miniNtuple/
+while read line
+do
+  echo $line
+  infile=$line
+  echo "Submitting process input file: $infile"
+  echo $counter >> Submitted
+  randomNumber=$counter
+  outfile=`echo Pthat80_MiniNtuple_$counter.root`
+  Error=`echo $outfile | sed "s/root/err/g"`
+  Output=`echo $outfile | sed "s/root/out/g"`
+  Log=`echo $outfile | sed "s/root/log/g"`        
+  if [ -f $destination/$outfile ]; then
+      echo "Output already exists : $outfile"
+  else
+      echo "Input is : $infile"
+      echo "Output is : $outfile"
+      echo "----------------------"
+	  cat > subfile <<EOF
+
+Universe       = vanilla
+
+# files will be copied back to this dir
+Initialdir     = .
+
+# run my script
+Executable     = run.sh
+
++AccountingGroup = "group_cmshi.pkurt"
+
+
+Arguments      = $infile $outfile $destination $randomNumber \$(Process)
+# input files. in this case, there are none.
+Input          = /dev/null
+
+# log files
+Error          = log/$Error
+Output         = log/$Output
+Log            = log/$Log
+
+# get the environment (path, etc.)
+Getenv         = True
+
+# prefer to run on fast computers
+Rank           = kflops
+
+# only run on 64 bit computers
+#Requirements   = Arch == "X86_64"
+Requirements = (Machine=="hibat0081.cmsaf.mit.edu") || (Machine=="hibat0082.cmsaf.mit.edu") || (Machine=="hibat0083.cmsaf.mit.edu") || (Machine=="hibat0084.cmsaf.mit.edu") || (Machine=="hibat0085.cmsaf.mit.edu") || (Machine=="hibat0086.cmsaf.mit.edu") || (Machine=="hibat0087.cmsaf.mit.edu") || (Machine=="hibat0088.cmsaf.mit.edu") || (Machine=="hibat0089.cmsaf.mit.edu") || (Machine=="hibat0090.cmsaf.mit.edu") || (Machine=="hibat0091.cmsaf.mit.edu") || (Machine=="hibat0092.cmsaf.mit.edu") ||  (Machine=="hibat0093.cmsaf.mit.edu") || (Machine=="hibat0094.cmsaf.mit.edu") || (Machine=="hibat0095.cmsaf.mit.edu") || (Machine=="hibat0096.cmsaf.mit.edu") || (Machine=="hibat0097.cmsaf.mit.edu") || (Machine=="hibat0098.cmsaf.mit.edu") || (Machine=="hibat0099.cmsaf.mit.edu") || (Machine=="hibat0100.cmsaf.mit.edu")
+# should write all output & logs to a local directory
+# and then transfer it back to Initialdir on completion
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
+# specify any extra input files (for example, an orcarc file)
+transfer_input_files    = copy_ntuple.out
+Queue
+EOF
+	  
+# submit the job
+condor_submit subfile
+  fi
+  counter=$(($counter + 1))
+  done
+#  done < file.list
+

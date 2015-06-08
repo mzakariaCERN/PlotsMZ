@@ -61,19 +61,30 @@ cout << "The value we need to normalize for is = " << s << endl;
 cout << "bin(0,0) before = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
 
 cout << "Normalizing the Mixed Events" << endl;
+<<<<<<< HEAD
 //hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(EtaBins/s);
 ////hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(EtaBins/s);
 hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(0.1/s);
 //cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
 cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
+=======
+hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Scale(EtaBins/s);
+hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
+>>>>>>> ef71881c634705e9a0d81e499b30bc1a5dd6f107
 
 //hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
 hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
 //return 0;
 cout << "Cloning Mixed Event to devide by it" << endl;
+<<<<<<< HEAD
 //return 0;
 //TH2D* ME = hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Clone("ME");
 TH2D* ME = hists_hJetTrackMELeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Clone("ME");
+=======
+
+
+TH2D* ME = hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Clone("ME");
+>>>>>>> ef71881c634705e9a0d81e499b30bc1a5dd6f107
 
 cout << "Divide Signal by ME ...." <<  endl;
 hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Divide(ME);
@@ -81,10 +92,17 @@ hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Di
 //cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
 cout << "bin(0,0) after = " << hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->GetBinContent(50,37) << endl;
 
+<<<<<<< HEAD
 //hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("Lego2");
 hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("Lego2");
 //return 0;
 //hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ResultPhi",50, 25)->Draw();
+=======
+
+hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ResultPhi",20, 80)->Draw();
+//hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("ResultPhi",49, 50, "o")->Draw();
+
+>>>>>>> ef71881c634705e9a0d81e499b30bc1a5dd6f107
 
 //So lets remember, we have 100 bins for eta. and the range of eta is |eta| < [-5, 5] (obtained from Proj Y -> it was created as such)
 //so 10 / 100 = .1 (eta/bin) or 10 bins per eta 
@@ -115,9 +133,19 @@ hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Pr
 //hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBR",66,80 )->Draw();
 hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBR",66,80 )->Draw("same");
 
-SBL->Add(SBR);
-SBL->Draw();
+<<<<<<< HEAD
+=======
+hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBL",21,35 )->Draw();
 
+hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("SBR",66,80 )->Draw();
+>>>>>>> ef71881c634705e9a0d81e499b30bc1a5dd6f107
+SBL->Add(SBR);
+SBL->SetMarkerStyle(20);
+SBL->SetMarkerColor(kRed);
+SBR->Draw();
+SBL->Draw("same");
+
+<<<<<<< HEAD
 //return 0;
 //hists_hJetTrackSignalBackgroundLeadingCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal",36,65 )->Draw();
 //Signal->Add(SBL,-1);
@@ -153,5 +181,13 @@ Signal->SetAxisRange(-1.5, 1.5,"X");
 Signal->Scale(1.0/(NumberDijets * 3.0 * dPhiBinWidth));
 Signal->Draw();
 
+=======
+
+//hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal",36,65 )->Draw();
+//Signal->Add(SBL,-1);
+// Signal->Draw();
+//
+//hists_hJetTrackSignalBackgroundCent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("Signal2",36,65 )->Draw("same");
+>>>>>>> ef71881c634705e9a0d81e499b30bc1a5dd6f107
 
                    }                                           
