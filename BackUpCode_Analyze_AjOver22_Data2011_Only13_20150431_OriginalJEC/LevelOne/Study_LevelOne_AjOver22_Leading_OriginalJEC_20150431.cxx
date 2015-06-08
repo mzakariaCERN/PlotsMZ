@@ -31,7 +31,7 @@
 	//TFile *fin = TFile::Open("Data2011_AjUnder22.root");  // The input file
 	//TFile *fin = TFile::Open("Data2011_AjUnder22_Only13.root");  // The input file
 	//TFile *fin = TFile::Open("../Data2011_AjUnder22_Only13_20150416.root");  // The input file
-	TFile *fin = TFile::Open("../../BackUpCode_root_output_AjOver22_Data2011_Only13_20150431_OriginalJEC/Data2011_Only13_20150431_OriginalJEC_AjUnder22.root");  // The input file
+	TFile *fin = TFile::Open("../../BackUpCode_root_output_AjOver22_Data2011_Only13_20150431_OriginalJEC/Data2011_Only13_20150431_OriginalJEC_AjOver22.root");  // The input file
 	//TFile *fin = TFile::Open("FromH/PbPb_Leading_Correlations.root");  // The input file
 	//TFile *fin = TFile::Open("Data2011_All_AJ33.root");  // The input file
 	//TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_AJ11.root");  // The input file
