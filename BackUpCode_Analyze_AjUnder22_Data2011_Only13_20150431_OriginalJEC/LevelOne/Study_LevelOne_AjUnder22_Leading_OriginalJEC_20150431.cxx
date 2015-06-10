@@ -31,14 +31,17 @@
 	//TFile *fin = TFile::Open("Data2011_AjUnder22.root");  // The input file
 	//TFile *fin = TFile::Open("Data2011_AjUnder22_Only13.root");  // The input file
 	//TFile *fin = TFile::Open("../Data2011_AjUnder22_Only13_20150416.root");  // The input file
+	//TFile *fin = TFile::Open("../../BackUpCode_root_output_AjOver22_Data2011_Only13_20150431_OriginalJEC/Data2011_Only13_20150431_OriginalJEC_AjOver22.root");  // The input file
+	TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_root_output_AjUnder22_Data2011_Only13_20150431_OriginalJEC/Data2011_Only13_20150431_OriginalJEC_AjUnder22.root");  // The input file
 	//TFile *fin = TFile::Open("FromH/PbPb_Leading_Correlations.root");  // The input file
 	//TFile *fin = TFile::Open("Data2011_All_AJ33.root");  // The input file
 	//TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_AJ11.root");  // The input file
 	//	TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_Aj11_20150318.root");  // The input file
 	//TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_Aj11_20150319.root");  // The input file
-	TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_root_output_AjUnder22_Data2011_Only13_20150431_OriginalJEC/Data2011_Only13_20150431_OriginalJEC_AjUnder22.root");  // The input file
+	//TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_root_output_AjOver22_Data2011_Only13_20150520_newJEC/Data2011_Only13_20150531_newJEC_AjOver22.root");  // The input file
+	//fout_inc = new TFile("LevelOne_PbPb_AjOver22_Correlations_20150431_OriginalJEC.root","RECREATE"); // The output file
 	fout_inc = new TFile("LevelOne_PbPb_AjUnder22_Correlations_20150431_OriginalJEC.root","RECREATE"); // The output file
-
+	
 	const int nCBins = 4;   //Centrality
 	const int nPtBins = 1;  // Hardest Jet range
 	const int nTrkPtBins = 5; //Associated tracks range
@@ -47,8 +50,8 @@
 	float SideBandRatio[nCBins][nPtBins][nTrkPtBins]; // used to save the mixing at (Deta,Dphi) = (0,0) (the output of fitting)
 	int NumberOfDijets = 0;
 	int NEtaBins = 0;
-	float PhiBinWidth = 0.0;
-	float EtaBinWidth = 0.0;
+	float PhiBinWidth = 0.0, PhiBinWidth_Sub = 0.0;
+	float EtaBinWidth = 0.0, EtaBinWidth_Sub = 0.0;
 	float left_level = 0, right_level = 0, left_level_error = 0, right_level_error = 0;
 	//	int me00bin;
 
@@ -82,7 +85,7 @@
 	float JetLabel[2] = {1, 2};
 	TString JetLabel_str[2] = {"Leading Jet","Leading Jet"};
 	//TString JetLabel_str[2] = {"    Leading","    Leading"};
-	TString JetLabel_labels[2] = {"Leading Jet","Leading Jet"};
+	TString JetLabel_labels[2] = {"Leading Jet","Sub-leading Jet"};
 	//TString JetLabel_labels[2] = {"   Leading","   Leading"};
 
 
@@ -95,6 +98,8 @@
 	TCanvas *cc7 = new TCanvas("cc7", "CC6j_LBoverRB", 0, 0, 1500, 1500);	
 	TCanvas *cc8 = new TCanvas("cc8", "CC7_EtaBandSymmetry", 0, 0, 1500, 1500);	
 	TCanvas *cc9 = new TCanvas("cc9", "CC8_EtaBandSymmetry_HT", 0, 0, 1500, 1500);	
+	TCanvas *cc3_Sub = new TCanvas("cc3_Sub", "CC3_Sub_SignalNoScale", 0, 0, 1500, 1500);	
+	TCanvas *cc4_Sub = new TCanvas("cc4_Sub", "CC4_S_Sub_SignalNoScale", 0, 0, 1500, 1500);	
 
 
 	cc1->Divide(4,4,0.0001,0.0001);   // 4 Raw by 4 Columns and the separation is 0.1 and 0.1
@@ -106,6 +111,8 @@
 	cc7->Divide(4,4,0.0001,0.0001);
 	cc8->Divide(4,4,0.0001,0.0001);
 	cc9->Divide(4,4,0.0001,0.0001);
+	cc3_Sub->Divide(4,4,0.0001,0.0001);
+	cc4_Sub->Divide(4,4,0.0001,0.0001);
 
 
 	TF1 *fa = new TF1("fa","[0]",-5,5);
@@ -129,13 +136,16 @@
 	gStyle->SetLabelSize(0.06);
 		
 	TH2D* hJetBackgroundLeading[nCBins][nPtBins][nTrkPtBins];  // The signal
+	TH2D* hJetBackgroundSubLeading[nCBins][nPtBins][nTrkPtBins];  // The signal
 	TH2D* hJetTrackSignalBackgroundLeading[nCBins][nPtBins][nTrkPtBins];  // The signal
 	TH2D* hJetTrackSignalBackgroundLeading_cc26[nCBins][nPtBins][nTrkPtBins];  // The signal
 	TH2D* hJetTrackMELeading[nCBins][nPtBins][nTrkPtBins];                // The mixed events
 	TH2D* hJetTrackMELeading_cc26[nCBins][nPtBins][nTrkPtBins];                // The mixed events
 	TH2D* hJetTrackMELeading_cc5[nCBins][nPtBins][nTrkPtBins];                // The mixed events
 	TH2D *yield_inc[nCBins][nPtBins][nTrkPtBins];      	       // used to save a clone of hJetTrackSignalBackgroundLeading[][][] and then become the Histo of Signal over ME
-	TH2D *yield_inc_copy[nCBins][nPtBins][nTrkPtBins];      	       // used to save a clone of hJetTrackSignalBackgroundLeading[][][] and then become the Histo of Signal over ME
+	TH2D *yield_inc_copy[nCBins][nPtBins][nTrkPtBins]; 
+	TH2D* hJetTrackSignalBackgroundSubLeading[nCBins][nPtBins][nTrkPtBins];
+     	       // used to save a clone of hJetTrackSignalBackgroundLeading[][][] and then become the Histo of Signal over ME
 	//TH2D *yield_inc_copy2[nCBins][nPtBins][nTrkPtBins];      	       // used to save a clone of yield_inc for separat studies
 	TH2D* Correlation[nCBins][nPtBins][nTrkPtBins];
 	TH2D* result[nCBins][nPtBins][nTrkPtBins];
@@ -146,7 +156,6 @@
 	TH1D* background_left_cc26[nCBins][nPtBins][nTrkPtBins];
 	TH1D* background_proj[nCBins][nPtBins][nTrkPtBins];
 	TH1D* background_proj_cc26[nCBins][nPtBins][nTrkPtBins];
-
 
 	TH1D *yield_inc_SBL[nCBins][nPtBins][nTrkPtBins];              // The Y projection of the yield (phi) at the left range
 	TH1D *yield_inc_SBR[nCBins][nPtBins][nTrkPtBins];		// The Y projection of the yield (phi) at the right range 
@@ -208,6 +217,8 @@
 				cout<<ibin<<" "<<ibin2<<" "<<ibin3<<endl;
 				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3] = (TH2D*)fin->Get((TString)(desc + "_hJetTrackSignalBackgroundLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Signal_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 				
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3] = (TH2D*)fin->Get((TString)(desc + "_hJetTrackSignalBackgroundSubLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Signal_Sub_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+				
 			//	hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3] = (TH2D*)fin->Get((TString)(desc + "_hJetTrackSignalBackgroundLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Yield_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 
 				hJetTrackMELeading[ibin][ibin2][ibin3] = (TH2D*) fin->Get((TString)(desc + "_hJetTrackMELeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Mixed_Event_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
@@ -245,23 +256,7 @@
 		float AjMax =  Aj[ibin]->GetXaxis()->GetBinUpEdge(AjBinMax);
 		cout << " Aj for this sampel = " << AjMax << endl;
 		
-		//TFile *f = TFile::Open("/home/mzakaria3/Documents/Research/Data2011_trkPtCut1_part1.root");
-		//TFile *f = TFile::Open("Data2011_trkPtCut1_All_AJ11.root");
-		//cout << "took the file" << endl;
-
-		//hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->Draw("LEGO2");
-		//cout << "Plot of the Mixed Events" << endl;
-
-		//hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionX("ProEta")->Draw();
-		//cout << "Eta Projection" <<  endl;
-
-		//hists_hJetTrackMECent0_Cent10_Pt100_Pt300_TrkPt1_TrkPt2->ProjectionY("me_projphi")->Draw();
-		//cout << "Phi Projection" << endl;
-
-		//cout << "Number of Eta bins:" << ProEta->GetNbinsX() << endl;
-		//float EtaBins = ProEta->GetNbinsX() ;
-		//cout << "Number of Phi bins:" << me_projphi->GetNbinsX() << endl;
-
+	
 		//Normalizing
 
 		for(int ibin2=0; ibin2<nPtBins;ibin2++){
@@ -333,16 +328,16 @@
 					TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.76,0.85,AjBin_labels[0]);
-					//TLatex *Ajtex = new TLatex(0.74,0.85,AjBin_labels[2]);
+					//TLatex *Ajtex = new TLatex(0.76,0.85,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.74,0.85,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 				}
 
-	cc1->SaveAs("cc1_ME_EtaProj_Leading_Under22.png");
+	cc1->SaveAs("cc1_ME_EtaProj_Leading_Over22.png");
 // return 1;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -359,18 +354,14 @@
 				me_projeta[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");
 				me_projeta[ibin][ibin2][ibin3]->SetAxisRange(-2,2, "X");
 				me_projeta[ibin][ibin2][ibin3]->GetXaxis()->SetRangeUser(-2.,2.);	
-				me_projeta[ibin][ibin2][ibin3]->GetXaxis() -> SetTitleOffset(0.8);
-				me_projeta[ibin][ibin2][ibin3]->GetXaxis()-> SetTitleSize(0.06);
-				me_projeta[ibin][ibin2][ibin3]->GetXaxis()-> SetLabelSize(0.06);
-				me_projeta[ibin][ibin2][ibin3]->GetYaxis()-> SetLabelSize(0.06);
-				me_projeta[ibin][ibin2][ibin3]->GetXaxis() -> CenterTitle();
-				
-
+				me_projeta[ibin][ibin2][ibin3]->GetXaxis()->SetTitleOffset(0.8);
+				me_projeta[ibin][ibin2][ibin3]->GetXaxis()->SetTitleSize(0.06);
+				me_projeta[ibin][ibin2][ibin3]->GetXaxis()->SetLabelSize(0.06);
+				me_projeta[ibin][ibin2][ibin3]->GetYaxis()->SetLabelSize(0.06);
+				me_projeta[ibin][ibin2][ibin3]->GetXaxis()->CenterTitle();
 				me_projeta[ibin][ibin2][ibin3]->Scale (1./me00[ibin][ibin2][ibin3]);
-
 				me_projeta[ibin][ibin2][ibin3]->SetMaximum(me_projeta[ibin][ibin2][ibin3]->GetMaximum()+0.15);
 				me_projeta[ibin][ibin2][ibin3]->Clone((TString)("Eta_Proj_Normalized"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
-
 				me_projeta[ibin][ibin2][ibin3]->Draw();
 				
 							//me_projeta[ibin][ibin2][ibin3]->Draw();
@@ -382,16 +373,16 @@
 					TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.74,0.85,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.74,0.85,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
 					}
 
-					cc2->SaveAs("cc2_MEOverME00_Leading_Under22.png");
+					cc2->SaveAs("cc2_MEOverME00_Leading_Over22.png");
 //if((4*(ibin3+1) - ibin) == 5)
 //{
 //return 2;
@@ -400,7 +391,7 @@
 	//##//
 	//##//		
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////					
-				cc3->cd(4*(ibin3+1)-ibin);
+	cc3->cd(4*(ibin3+1)-ibin);
 
 	hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
 	hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
@@ -429,10 +420,10 @@
 					pttex->SetNDC();
 					pttex->Draw();
 					//TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[1]);
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -445,16 +436,15 @@
 					TLatex *pttex = new TLatex(0.15,0.83,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
-
 				}
-	cc3->SaveAs("cc3_SignalNoScale_Leading_Under22.png");
+	cc3->SaveAs("cc3_SignalNoScale_Leading_Over22.png");
 //return 3;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -477,17 +467,16 @@
 			//	hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Scale(1.0 / (3.0 *  Aj[ibin]->GetEntries()));
 				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
 				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis() -> CenterTitle();
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis() -> CenterTitle();
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis() -> SetTitleOffset(1.6);
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis() -> SetTitleOffset(1.6);
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->SetAxisRange(-3., 3.,"X");
-		
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->CenterTitle();
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(1.6);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitleOffset(1.6);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->SetAxisRange(-3., 3.,"X");	
 				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetRangeUser(-3.,3.);	
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()-> SetTitleSize(0.06);
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()-> SetTitleSize(0.06);
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()-> SetLabelSize(0.06);
-				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()-> SetLabelSize(0.06);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitleSize(0.06);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetXaxis()->SetLabelSize(0.06);
+				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->GetYaxis()->SetLabelSize(0.06);
 				hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Draw("LEGO2");	
 
 				if(ibin<3){
@@ -497,10 +486,10 @@
 					TLatex *pttex = new TLatex(0.05,0.83,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -513,17 +502,17 @@
 					TLatex *pttex = new TLatex(0.15,0.83,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
 
 				}
 			//This is an unvariant histogram			
-			cc4->SaveAs("cc4_S_Leading_Under22.png");
+			cc4->SaveAs("cc4_S_Leading_Over22.png");
 					//if(ibin != 0)
 			//return 4;
 			
@@ -596,7 +585,7 @@
 					cc5->Modified();
 					cc5->Update();
 				
-					cc5->SaveAs("cc5_MEOverME00_Notscaled_Leading_Under22.png");
+					cc5->SaveAs("cc5_MEOverME00_Notscaled_Leading_Over22.png");
 //return 5;
 
 	cc6->cd(4*(ibin3+1)-ibin);
@@ -637,10 +626,10 @@
 					TLatex *pttex = new TLatex(0.05,0.83,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -653,10 +642,10 @@
 					TLatex *pttex = new TLatex(0.15,0.83,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -666,7 +655,7 @@
 	//	cc6->Modified();
 	//	cc6->Update();
 
-		cc6->SaveAs("cc6_MEOverME00_Scaled_Leading_Under22.png");
+		cc6->SaveAs("cc6_MEOverME00_Scaled_Leading_Over22.png");
 
 //return 6;
 
@@ -709,10 +698,10 @@
 					TLatex *pttex = new TLatex(0.05,0.83,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -725,10 +714,10 @@
 					TLatex *pttex = new TLatex(0.15,0.83,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -736,7 +725,7 @@
 				}
 
 
-				cc7->SaveAs("cc7_S_Scaled_OverMEOverME00_NotScaled_Leading_Under22.png");
+				cc7->SaveAs("cc7_S_Scaled_OverMEOverME00_NotScaled_Leading_Over22.png");
 //	return 7;
 				cc8->cd(4*(ibin3+1)-ibin);
 
@@ -817,16 +806,16 @@ double level;
 					TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
-					//TLatex *Ajtex = new TLatex(0.73,0.85,AjBin_labels[2]);
+					//TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.73,0.85,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
 				}
-				cc8->SaveAs("cc8_RightBandLeftBandComparison_Leading_Under22.png");
+				cc8->SaveAs("cc8_RightBandLeftBandComparison_Leading_Over22.png");
 								
 //return 8;
 				cc9->cd((4*(ibin3+1)-ibin));
@@ -990,11 +979,11 @@ double level;
 					TLatex *pttex = new TLatex(0.15,0.78,TrkPtBin_labels[ibin3]);
 					pttex->SetNDC();
 					pttex->Draw();
-					TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
-					//TLatex *Ajtex = new TLatex(0.73,0.85,AjBin_labels[2]);
+					//TLatex *Ajtex = new TLatex(0.75,0.85,AjBin_labels[0]);
+					TLatex *Ajtex = new TLatex(0.73,0.85,AjBin_labels[2]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
+					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[1]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 					TLatex *COMtex = new TLatex(0.15, 0.93, COM_label[0]);
@@ -1010,9 +999,114 @@ double level;
 					Pbtex->Draw();
 				}
 		//hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Draw("LEGO2");
-			cc9->SaveAs("cc9_PhiProjectionofSignalandBands_Leading_Under22.png");			
+			cc9->SaveAs("cc9_PhiProjectionofSignalandBands_Leading_Over22.png");			
 //return 9;
+
+	cc3_Sub->cd(4*(ibin3+1)-ibin);
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->CenterTitle();
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(1.6);
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitleOffset(1.6);
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitleSize(0.06);
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetLabelSize(0.06);
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetLabelSize(0.06);
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->SetAxisRange(-3., 3.,"X");
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetRangeUser(-3.,3.);				
+	hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Draw("LEGO2");
 		
+	if(ibin<3){
+			TLatex *centtex_cc3_sub = new TLatex(0.05,0.9,CBin_labels[ibin]);
+			centtex_cc3_sub->SetNDC();
+			centtex_cc3_sub->Draw();
+			TLatex *pttex_cc3_sub = new TLatex(0.05,0.83,TrkPtBin_labels[ibin3]);
+			pttex_cc3_sub->SetNDC();
+			pttex_cc3_sub->Draw();
+			//TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[1]);
+			TLatex *Ajtex_cc3_sub = new TLatex(0.78,0.90,AjBin_labels[2]);
+			Ajtex_cc3_sub->SetNDC();
+			Ajtex_cc3_sub->Draw();
+			TLatex *Jettex_cc3_sub = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+			Jettex_cc3_sub->SetNDC();
+			Jettex_cc3_sub->Draw();
+				}
+
+		if(ibin==3){
+					TLatex *centtex = new TLatex(0.15,0.9,CBin_labels[ibin]);
+					centtex->SetNDC();
+					centtex->Draw();
+					TLatex *pttex = new TLatex(0.15,0.83,TrkPtBin_labels[ibin3]);
+					pttex->SetNDC();
+					pttex->Draw();
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
+					Ajtex->SetNDC();
+					Ajtex->Draw();
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+					Jettex->SetNDC();
+					Jettex->Draw();
+
+				}
+	cc3_Sub->SaveAs("cc3_sub_SignalNoScale_SubLeading_Over22.png");
+	
+
+				cc4_Sub->cd(4*(ibin3+1)-ibin);
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3] = (TH2D*)fin->Get((TString)(desc + "_hJetTrackSignalBackgroundSubLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Scaled_Yield_Sub_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+
+				EtaBinWidth_Sub =  hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->GetBinWidth(1) ;
+				PhiBinWidth_Sub =  hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->GetBinWidth(1) ;
+	
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Scale(1.0 / (EtaBinWidth_Sub *  Aj[ibin]->GetEntries() * PhiBinWidth_Sub));
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Clone((TString) ("Scaled_Signal_Inv_Sub_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->CenterTitle();
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(1.6);
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitleOffset(1.6);
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->SetAxisRange(-3., 3.,"X");	
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetRangeUser(-3.,3.);	
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitleSize(0.06);
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetLabelSize(0.06);
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetLabelSize(0.06);
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Draw("LEGO2");	
+			
+				if(ibin<3){
+					TLatex *centtex = new TLatex(0.05,0.9,CBin_labels[ibin]);
+					centtex->SetNDC();
+					centtex->Draw();
+					TLatex *pttex = new TLatex(0.05,0.83,TrkPtBin_labels[ibin3]);
+					pttex->SetNDC();
+					pttex->Draw();
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
+					Ajtex->SetNDC();
+					Ajtex->Draw();
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+					Jettex->SetNDC();
+					Jettex->Draw();
+
+
+				}
+				if(ibin==3){
+					TLatex *centtex = new TLatex(0.15,0.9,CBin_labels[ibin]);
+					centtex->SetNDC();
+					centtex->Draw();
+					TLatex *pttex = new TLatex(0.15,0.83,TrkPtBin_labels[ibin3]);
+					pttex->SetNDC();
+					pttex->Draw();
+					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[2]);
+					Ajtex->SetNDC();
+					Ajtex->Draw();
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+					Jettex->SetNDC();
+					Jettex->Draw();
+
+				}
+			cc4_Sub->SaveAs("cc4_S_SubLeading_Over22.png");
+				
+				
 			}
 		}
 	}
