@@ -200,6 +200,7 @@
 
 	TH1D *EtaProjDummy[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal[nCBins][nPtBins][nTrkPtBins];
+	TH1D *Signal2[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal_cc26[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL_cc10[nCBins][nPtBins][nTrkPtBins];
@@ -1054,9 +1055,10 @@ double level;
 
 				EtaBinWidth_Sub =  hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->GetBinWidth(1) ;
 				PhiBinWidth_Sub =  hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->GetBinWidth(1) ;
-	
+
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Divide(hJetTrackMELeading[ibin][ibin2][ibin3]);
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Scale(1.0 / (EtaBinWidth_Sub *  Aj[ibin]->GetEntries() * PhiBinWidth_Sub));
-				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Clone((TString) ("Scaled_Signal_Inv_Sub_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Clone((TString) ("Scaled_Normalized_Yield_Inv_Sub_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->CenterTitle();
