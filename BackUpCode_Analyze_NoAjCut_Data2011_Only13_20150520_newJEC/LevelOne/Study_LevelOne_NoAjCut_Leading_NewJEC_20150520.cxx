@@ -209,6 +209,7 @@
 
 	TH1D *EtaProjDummy[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal[nCBins][nPtBins][nTrkPtBins];
+	TH1D *Signal2[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal_cc26[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL_cc10[nCBins][nPtBins][nTrkPtBins];
@@ -339,12 +340,12 @@
 					TLatex *Ajtex = new TLatex(0.74,0.85,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 				}
 
-	cc1->SaveAs("cc1_ME_EtaProj_Leading_Over22.png");
+	cc1->SaveAs("cc1_ME_EtaProj_Leading_NoAjCut.png");
 // return 1;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -383,13 +384,13 @@
 					TLatex *Ajtex = new TLatex(0.74,0.85,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.715, 0.80, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
 					}
 
-					cc2->SaveAs("cc2_MEOverME00_Leading_Over22.png");
+					cc2->SaveAs("cc2_MEOverME00_Leading_NoAjCut.png");
 //if((4*(ibin3+1) - ibin) == 5)
 //{
 //return 2;
@@ -430,7 +431,7 @@
 					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -446,12 +447,12 @@
 					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
 				}
-	cc3->SaveAs("cc3_SignalNoScale_Leading_Over22.png");
+	cc3->SaveAs("cc3_SignalNoScale_Leading_NoAjCut.png");
 //return 3;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -496,7 +497,7 @@
 					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
@@ -512,14 +513,14 @@
 					TLatex *Ajtex = new TLatex(0.78,0.90,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.75, 0.85, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
 
 				}
 			//This is an unvariant histogram			
-			cc4->SaveAs("cc4_S_Leading_Over22.png");
+			cc4->SaveAs("cc4_S_Leading_NoAjCut.png");
 					//if(ibin != 0)
 			//return 4;
 			
@@ -592,7 +593,7 @@
 					cc5->Modified();
 					cc5->Update();
 				
-					cc5->SaveAs("cc5_MEOverME00_Notscaled_Leading_Over22.png");
+					cc5->SaveAs("cc5_MEOverME00_Notscaled_Leading_NoAjCut.png");
 //return 5;
 
 	cc6->cd(4*(ibin3+1)-ibin);
@@ -662,7 +663,7 @@
 	//	cc6->Modified();
 	//	cc6->Update();
 
-		cc6->SaveAs("cc6_MEOverME00_Scaled_Leading_Over22.png");
+		cc6->SaveAs("cc6_MEOverME00_Scaled_Leading_NoAjCut.png");
 
 //return 6;
 
@@ -732,7 +733,7 @@
 				}
 
 
-				cc7->SaveAs("cc7_S_Scaled_OverMEOverME00_NotScaled_Leading_Over22.png");
+				cc7->SaveAs("cc7_S_Scaled_OverMEOverME00_NotScaled_Leading_NoAjCut.png");
 //	return 7;
 				cc8->cd(4*(ibin3+1)-ibin);
 
@@ -817,12 +818,12 @@ double level;
 					TLatex *Ajtex = new TLatex(0.73,0.85,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 
 				}
-				cc8->SaveAs("cc8_RightBandLeftBandComparison_Leading_Over22.png");
+				cc8->SaveAs("cc8_RightBandLeftBandComparison_Leading_NoAjCut.png");
 								
 //return 8;
 				cc9->cd((4*(ibin3+1)-ibin));
@@ -990,7 +991,7 @@ double level;
 					TLatex *Ajtex = new TLatex(0.73,0.85,AjBin_labels[1]);
 					Ajtex->SetNDC();
 					Ajtex->Draw();
-					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[1]);
+					TLatex *Jettex = new TLatex(0.70, 0.80, JetLabel_labels[0]);
 					Jettex->SetNDC();
 					Jettex->Draw();
 					TLatex *COMtex = new TLatex(0.15, 0.93, COM_label[0]);
@@ -1006,7 +1007,7 @@ double level;
 					Pbtex->Draw();
 				}
 		//hJetTrackSignalBackgroundLeading[ibin][ibin2][ibin3]->Draw("LEGO2");
-			cc9->SaveAs("cc9_PhiProjectionofSignalandBands_Leading_Over22.png");			
+			cc9->SaveAs("cc9_PhiProjectionofSignalandBands_Leading_NoAjCut.png");			
 //return 9;
 
 	cc3_Sub->cd(4*(ibin3+1)-ibin);
@@ -1055,7 +1056,7 @@ double level;
 					Jettex->Draw();
 
 				}
-	cc3_Sub->SaveAs("cc3_sub_SignalNoScale_SubLeading_Over22.png");
+	cc3_Sub->SaveAs("cc3_sub_SignalNoScale_SubLeading_NoAjCut.png");
 	
 
 				cc4_Sub->cd(4*(ibin3+1)-ibin);
@@ -1064,8 +1065,9 @@ double level;
 				EtaBinWidth_Sub =  hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->GetBinWidth(1) ;
 				PhiBinWidth_Sub =  hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->GetBinWidth(1) ;
 	
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Divide(hJetTrackMELeading[ibin][ibin2][ibin3]);
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Scale(1.0 / (EtaBinWidth_Sub *  Aj[ibin]->GetEntries() * PhiBinWidth_Sub));
-				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Clone((TString) ("Scaled_Signal_Inv_Sub_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
+				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->Clone((TString) ("Scaled_Normalized_Yield_Inv_Sub_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetYaxis()->SetTitle("#Delta#phi");
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->SetTitle("#Delta#eta");	
 				hJetTrackSignalBackgroundSubLeading[ibin][ibin2][ibin3]->GetXaxis()->CenterTitle();
@@ -1111,7 +1113,7 @@ double level;
 					Jettex->Draw();
 
 				}
-			cc4_Sub->SaveAs("cc4_S_SubLeading_Over22.png");
+			cc4_Sub->SaveAs("cc4_S_SubLeading_NoAjCut.png");
 				
 				
 			}
