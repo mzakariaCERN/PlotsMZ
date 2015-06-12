@@ -1,4 +1,4 @@
-
+///BIG NOTE we made it a comparison plot
 	#include "TFile.h"
 	#include "TMath.h"
 	#include "TH1.h"
@@ -36,7 +36,9 @@
 	//TFile *fin = TFile::Open("Data2011_AjUnder22_Only13.root");  // The input file
 	TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_AjOver22_Only13_20150501.root");  // The input file
 	//TFile *fin_LevelOne = TFile::Open("~/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_Analyze_AjOver22_Data2011_Only13_20150520_newJEC/LevelOne/LevelOne_PbPb_AjOver22_Correlations_20150520.root");  // The input file
+
 	TFile *fin_LevelOne = TFile::Open("~/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_Analyze_AjOver22_Data2011_Only13_20150431_OriginalJEC/LevelOne/LevelOne_PbPb_AjOver22_Correlations_20150431_OriginalJEC.root");  // The input file
+	TFile *fin_LevelTwo_new = TFile::Open("~/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_Analyze_AjOver22_Data2011_Only13_20150520_newJEC/LevelTwo/LevelTwo_PbPb_AjOver22_Correlations_Leading_NewJEC_20150520.root");  // The input file
 	//TFile *fin = TFile::Open("FromH/PbPb_Leading_Correlations.root");  // The input file
 	//TFile *fin = TFile::Open("Data2011_All_AJ33.root");  // The input file
 	//TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_AJ11.root");  // The input file
@@ -131,7 +133,7 @@
 
 
 	dd1->Divide(4,4,0.0001,0.0001);
-	dd2->Divide(4,4,0.0001,0.0001);
+	dd2->Divide(4,4,0.000,0.000);
 	dd3->Divide(4,4,0.0001,0.0001);
 	cc9->Divide(4,4,0.0001,0.0001);
 	cc10->Divide(4,4,0.0001,0.0001);
@@ -256,6 +258,7 @@ if (1) {
 	TH1D* background_left_cc26[nCBins][nPtBins][nTrkPtBins];
 	TH1D* background_proj[nCBins][nPtBins][nTrkPtBins];
 	TH1D* background_proj_cc26[nCBins][nPtBins][nTrkPtBins];
+	TH1D* NEWJEC[nCBins][nPtBins][nTrkPtBins];
 
 
 	TH1D *yield_inc_SBL[nCBins][nPtBins][nTrkPtBins];              // The Y projection of the yield (phi) at the left range
@@ -302,6 +305,7 @@ if (1) {
 
 	TH1D *EtaProjDummy[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal[nCBins][nPtBins][nTrkPtBins];
+	TH1D *Signal2[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal_cc26[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL_cc10[nCBins][nPtBins][nTrkPtBins];
@@ -326,6 +330,8 @@ if (1) {
 				Correlation[ibin][ibin2][ibin3] = (TH2D*)  fin->Get((TString) (desc + "_hJetTrackSignalBackgroundLeading"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]))->Clone((TString) ("Raw_Yield_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));
 
 	Scaled_Normalized_Yield_Inv[ibin][ibin2][ibin3] = (TH2D*)fin_LevelOne->Get((TString)("Scaled_Normalized_Yield_Inv_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]));
+
+	NEWJEC[ibin][ibin2][ibin3]= (TH1D*) fin_LevelTwo_new->Get ((TString)("Result_Leading_dd2_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+ "_" + TrkPtBin_strs[ibin3] + "_" + TrkPtBin_strs[ibin3+1]));
 
 
 			} // end of ibin3
@@ -527,8 +533,9 @@ if (1) {
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(0.6);
-	
-			
+			Signal2[ibin][ibin2][ibin3] = (TH1D*)Signal[ibin][ibin2][ibin3]->Clone((TString)("Result_Leading_dd2_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));	
+						NEWJEC[ibin][ibin2][ibin3]->SetMarkerColor(kBlue);
+					NEWJEC[ibin][ibin2][ibin3]->Draw("same");	
 			{
 					TLatex *centtex = new TLatex(0.15,0.85,CBin_labels[ibin]);
 					centtex->SetNDC();
