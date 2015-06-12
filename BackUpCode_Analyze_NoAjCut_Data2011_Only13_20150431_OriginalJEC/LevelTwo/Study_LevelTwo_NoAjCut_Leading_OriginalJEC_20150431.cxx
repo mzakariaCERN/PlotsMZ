@@ -35,7 +35,7 @@
 	//TFile *fin = TFile::Open("Data2011_AjUnder22.root");  // The input file
 	//TFile *fin = TFile::Open("Data2011_AjUnder22_Only13.root");  // The input file
 	TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_NoAjCut_Only13_20150511.root");  // The input file
-	TFile *fin_LevelOne = TFile::Open("~/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_Analyze_NoAjCut22_Data2011_Only13_20150431_OriginalJEC/LevelOne/LevelOne_PbPb_NoAjCut22_Correlations_20150431.root");  // The input file
+	TFile *fin_LevelOne = TFile::Open("~/Documents/Research/MyGitProject/PlotsMZ/BackUpCode_Analyze_NoAjCut_Data2011_Only13_20150431_OriginalJEC/LevelOne/LevelOne_PbPb_NoAjCut22_Correlations_20150431_OriginalJEC.root");  // The input file
 	//TFile *fin = TFile::Open("FromH/PbPb_Leading_Correlations.root");  // The input file
 	//TFile *fin = TFile::Open("Data2011_All_AJ33.root");  // The input file
 	//TFile *fin = TFile::Open("/home/mzakaria3/Documents/Research/MyGitProject/PlotsMZ/Data2011_trkPtCut1_All_AJ11.root");  // The input file
@@ -301,6 +301,7 @@ if (1) {
 
 	TH1D *EtaProjDummy[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal[nCBins][nPtBins][nTrkPtBins];
+	TH1D *Signal2[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal_cc26[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL_cc10[nCBins][nPtBins][nTrkPtBins];
@@ -526,6 +527,7 @@ if (1) {
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(0.6);
+			Signal2[ibin][ibin2][ibin3] = (TH1D*)Signal[ibin][ibin2][ibin3]->Clone((TString)("Result_Leading_dd2_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));	
 	
 			
 			{
