@@ -301,6 +301,7 @@ if (1) {
 
 	TH1D *EtaProjDummy[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal[nCBins][nPtBins][nTrkPtBins];
+	TH1D *Signal2[nCBins][nPtBins][nTrkPtBins];
 	TH1D *Signal_cc26[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL[nCBins][nPtBins][nTrkPtBins];
 	TH1D *SignalMinusRL_cc10[nCBins][nPtBins][nTrkPtBins];
@@ -526,7 +527,7 @@ if (1) {
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->SetTitleSize(0.06);
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->CenterTitle();
 			Signal[ibin][ibin2][ibin3]->GetYaxis()->SetTitleOffset(0.6);
-	
+			Signal2[ibin][ibin2][ibin3] = (TH1D*)Signal[ibin][ibin2][ibin3]->Clone((TString)("Result_Leading_dd2_"+ CBin_strs[ibin] + "_" + CBin_strs[ibin+1] + "_" + PtBin_strs[ibin2] + "_" + PtBin_strs[ibin2+1]+"_"+TrkPtBin_strs[ibin3]+"_" +TrkPtBin_strs[ibin3+1]));	
 			
 			{
 					TLatex *centtex = new TLatex(0.15,0.85,CBin_labels[ibin]);
